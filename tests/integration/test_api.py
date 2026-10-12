@@ -32,10 +32,18 @@ class ApiTests(unittest.IsolatedAsyncioTestCase):
         await self.lifespan.__aexit__(None, None, None)
 
     async def test_health_and_frontend(self):
-        self.assertEqual((await self.client.get("/api/v1/health")).json()["status"], "ok")
+        health = (await self.client.get("/api/v1/health")).json()
+        self.assertEqual(health["status"], "ready")
+        self.assertTrue(health["prediction_available"])
+        self.assertTrue(health["risk_available"])
         page = await self.client.get("/")
         self.assertEqual(page.status_code, 200)
         self.assertIn("EduPredict AI", page.text)
+        self.assertIn('id="study-plan-form"', page.text)
+        for day in ("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"):
+            self.assertIn(f'data-day="{day}"', page.text)
+        self.assertIn('id="focus-areas"', page.text)
+        self.assertIn("/api/v1/study-plan", page.text)
 
     async def test_prediction_returns_unclipped_number(self):
         response = await self.client.post("/api/v1/predict", json=VALID_STUDENT)
@@ -57,6 +65,57 @@ class ApiTests(unittest.IsolatedAsyncioTestCase):
         response = await self.client.post("/api/v1/recommendations", json=VALID_STUDENT)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.json()["recommendations"]), 3)
+
+    async def test_study_plan_uses_supplied_availability_and_focus_areas(self):
+        response = await self.client.post(
+            "/api/v1/study-plan",
+            json={
+                "available_minutes_by_day": {"Monday": 55, "Wednesday": 25},
+                "focus_areas": ["Review notes", "Practice problems"],
+            },
+        )
+        self.assertEqual(response.status_code, 200)
+        result = response.json()
+        self.assertEqual(result["planner_type"], "deterministic rules-based fallback")
+        self.assertEqual(len(result["schedule"]), 7)
+        self.assertEqual(
+            [block["focus"] for block in result["schedule"][0]["blocks"]],
+            ["Review notes", "Short break", "Practice problems"],
+        )
+        self.assertIn("does not guarantee", result["disclaimer"])
+        defaults = await self.client.post(
+            "/api/v1/study-plan",
+            json={"available_minutes_by_day": {"Monday": 25}},
+        )
+        self.assertEqual(defaults.status_code, 200)
+        self.assertEqual(
+            defaults.json()["schedule"][0]["blocks"][0]["focus"],
+            "Review class notes",
+        )
+
+    async def test_study_plan_rejects_invalid_day_minutes_and_focus_areas(self):
+        invalid_payloads = (
+            {"available_minutes_by_day": {"Someday": 30}},
+            {"available_minutes_by_day": {"Monday": 481}},
+            {"available_minutes_by_day": {"Monday": 30.5}},
+            {"available_minutes_by_day": {"Monday": 30}, "focus_areas": []},
+            {"available_minutes_by_day": {"Monday": 30}, "focus_areas": ["   "]},
+            {"available_minutes_by_day": {"Monday": 30}, "focus_areas": "Review"},
+        )
+        for payload in invalid_payloads:
+            with self.subTest(payload=payload):
+                response = await self.client.post("/api/v1/study-plan", json=payload)
+                self.assertEqual(response.status_code, 422)
+                self.assertTrue(response.json()["detail"])
+
+    async def test_study_plan_rejects_extra_or_missing_fields(self):
+        for payload in (
+            {"available_minutes_by_day": {"Monday": 20}, "unexpected": "value"},
+            {"focus_areas": ["Review"]},
+        ):
+            with self.subTest(payload=payload):
+                response = await self.client.post("/api/v1/study-plan", json=payload)
+                self.assertEqual(response.status_code, 422)
 
     async def test_missing_invalid_and_target_leaking_inputs_are_rejected(self):
         missing = {key: value for key, value in VALID_STUDENT.items() if key != "Gender"}

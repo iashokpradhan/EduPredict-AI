@@ -4,6 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#123b57">
+  <link rel="icon" href="data:,">
   <title>EduPredict AI | Student Support Demo</title>
   <style>
     :root{color-scheme:light;--ink:#162b3a;--muted:#557080;--line:#d6e2e8;--paper:#fff;--wash:#f1f7f9;--blue:#176b87;--teal:#087e78;--amber:#875812;--shadow:0 18px 50px #173d5110}
@@ -16,8 +17,9 @@
     .fields{display:grid;grid-template-columns:1fr 1fr;gap:14px}label{font-size:.88rem;font-weight:650;display:block;margin-bottom:5px}input,select{width:100%;min-height:44px;padding:9px 11px;border:1px solid #aebfc8;border-radius:9px;color:var(--ink);font:inherit;background:white}input:focus,select:focus,button:focus-visible{outline:3px solid #7bc9ca;outline-offset:2px}.hint{display:block;color:var(--muted);font-size:.75rem;margin-top:3px}
     button{border:0;border-radius:10px;background:var(--blue);color:white;padding:12px 20px;font:inherit;font-weight:700;cursor:pointer;margin-top:18px}button:hover{background:#10566f}button:disabled{opacity:.58;cursor:wait}
     .status{min-height:26px;margin:12px 0 0;color:var(--muted)}.status.error{color:#a02e2e}.results{display:flex;flex-direction:column;gap:12px}.result-card{border:1px solid var(--line);border-radius:12px;padding:15px;background:#fbfdfe}.result-card h3{font-size:1rem;margin:0 0 5px}.big{font-size:1.7rem;font-weight:750;color:var(--blue)}.small{font-size:.85rem;color:var(--muted);margin:0}.badge{display:inline-block;padding:3px 9px;border-radius:999px;background:#fff1d6;color:var(--amber);font-weight:700;font-size:.8rem}.recommendation{padding:12px 0;border-top:1px solid var(--line)}.recommendation:first-of-type{border-top:0}.recommendation p{margin:4px 0;font-size:.9rem}.empty{color:var(--muted);font-style:italic}
+    .capability-status{max-width:1120px;margin:14px auto 0;padding:12px 16px;border:1px solid #bfd5d9;border-radius:12px;background:#e9f4f3;color:#174f55;font-size:.92rem}.capability-status[data-state="error"]{border-color:#e3b9b9;background:#fff3f3;color:#8b2525}.capability-status strong{margin-right:8px}.capability-status span{display:inline-block;margin-right:12px}.planner-section{grid-column:1/-1}.availability-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.plan-days{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:16px}.plan-day{border:1px solid var(--line);border-radius:10px;padding:12px;background:#fbfdfe}.plan-day h3{font-size:.95rem;margin:0 0 6px}.plan-day ul{padding-left:20px;margin:6px 0}.plan-day li{font-size:.88rem}
     footer{max-width:1120px;padding:0 20px 30px;margin:auto;color:var(--muted);font-size:.82rem}
-    @media(max-width:780px){main{grid-template-columns:1fr;margin-top:16px}.notice{grid-column:auto}}@media(max-width:480px){header{padding:24px 20px}.fields{grid-template-columns:1fr}section{padding:18px}}
+    @media(max-width:780px){main{grid-template-columns:1fr;margin-top:16px}.notice,.planner-section{grid-column:auto}.availability-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.plan-days{grid-template-columns:1fr}}@media(max-width:480px){header{padding:24px 20px}.fields,.availability-grid{grid-template-columns:1fr}section{padding:18px}}
   </style>
 </head>
 <body>
@@ -26,11 +28,14 @@
     <h1>Understand patterns. Plan a next step.</h1>
     <p>Enter information available before the outcome is known. This demo returns a model estimate and separate, rule-based suggestions for human review.</p>
   </header>
+  <div id="capability-status" class="capability-status" role="status" aria-live="polite" aria-atomic="true" aria-busy="true">
+    Checking app and model availability…
+  </div>
   <main>
     <section aria-labelledby="form-title">
       <h2 id="form-title">Student information</h2>
       <p class="intro">Use current or historical inputs only. Student ID and Final CGPA are intentionally not requested.</p>
-      <form id="student-form">
+      <form id="student-form" novalidate>
         <div class="fields">
           <div><label for="gender">Gender</label><select id="gender" name="Gender" required><option value="">Choose…</option><option>Female</option><option>Male</option></select></div>
           <div><label for="major">Major</label><select id="major" name="Major" required><option value="">Choose…</option><option>Business</option><option>Computer Science</option><option>Economics</option><option>Engineering</option><option>Mathematics</option><option>Psychology</option></select></div>
@@ -48,7 +53,26 @@
     <section aria-labelledby="results-title">
       <h2 id="results-title">Results for review</h2>
       <p class="intro">Prediction, risk estimate, and guidance are shown separately.</p>
-      <div id="results" class="results"><p class="empty">Submit the form to view results.</p></div>
+      <div id="results" class="results" aria-live="polite" aria-busy="false"><p class="empty">Submit the form to view results.</p></div>
+    </section>
+    <section class="planner-section" aria-labelledby="planner-title">
+      <h2 id="planner-title">Build a weekly study plan</h2>
+      <p class="intro">Enter the minutes you can set aside each day. Focus areas are optional; without them, the planner uses simple default activities.</p>
+      <form id="study-plan-form">
+        <div class="availability-grid">
+          <div><label for="minutes-monday">Monday minutes</label><input id="minutes-monday" data-day="Monday" type="number" min="0" max="480" step="1" value="0" required></div>
+          <div><label for="minutes-tuesday">Tuesday minutes</label><input id="minutes-tuesday" data-day="Tuesday" type="number" min="0" max="480" step="1" value="0" required></div>
+          <div><label for="minutes-wednesday">Wednesday minutes</label><input id="minutes-wednesday" data-day="Wednesday" type="number" min="0" max="480" step="1" value="0" required></div>
+          <div><label for="minutes-thursday">Thursday minutes</label><input id="minutes-thursday" data-day="Thursday" type="number" min="0" max="480" step="1" value="0" required></div>
+          <div><label for="minutes-friday">Friday minutes</label><input id="minutes-friday" data-day="Friday" type="number" min="0" max="480" step="1" value="0" required></div>
+          <div><label for="minutes-saturday">Saturday minutes</label><input id="minutes-saturday" data-day="Saturday" type="number" min="0" max="480" step="1" value="0" required></div>
+          <div><label for="minutes-sunday">Sunday minutes</label><input id="minutes-sunday" data-day="Sunday" type="number" min="0" max="480" step="1" value="0" required></div>
+          <div><label for="focus-areas">Focus areas <span class="hint">Optional; separate items with commas.</span></label><input id="focus-areas" type="text" maxlength="1000" placeholder="Review notes, Practice problems"></div>
+        </div>
+        <button id="study-plan-button" type="submit">Create weekly plan</button>
+        <p id="study-plan-status" class="status" role="status" aria-live="polite"></p>
+      </form>
+      <div id="study-plan-results" class="plan-days" aria-live="polite" aria-busy="false"><p class="empty">Your plan will appear here.</p></div>
     </section>
     <aside class="notice" role="note"><strong>Important:</strong> Predictions are estimates from a single dataset and are not guarantees, diagnoses, or the sole basis for consequential academic decisions. The risk cutoff is a provisional project assumption. Discuss concerns with an appropriate instructor or adviser.</aside>
   </main>
@@ -58,6 +82,11 @@
     const statusNode = document.getElementById('status');
     const resultsNode = document.getElementById('results');
     const button = document.getElementById('submit-button');
+    const capabilityStatus = document.getElementById('capability-status');
+    const studyPlanForm = document.getElementById('study-plan-form');
+    const studyPlanStatus = document.getElementById('study-plan-status');
+    const studyPlanResults = document.getElementById('study-plan-results');
+    const studyPlanButton = document.getElementById('study-plan-button');
 
     function addText(parent, tag, text, className) {
       const node = document.createElement(tag);
@@ -66,58 +95,215 @@
       parent.appendChild(node);
       return node;
     }
+    async function refreshCapabilityStatus() {
+      capabilityStatus.setAttribute('aria-busy', 'true');
+      try {
+        const response = await fetch('/api/v1/health');
+        if (!response.ok) throw new Error(`Health check returned HTTP ${response.status}.`);
+        const health = await response.json();
+        capabilityStatus.replaceChildren();
+        capabilityStatus.dataset.state = health.ready ? 'ready' : 'error';
+        addText(capabilityStatus, 'strong', health.ready ? 'Local app ready' : 'Local app unavailable');
+        const predictionState = health.prediction_status === 'available'
+          ? 'available' : health.prediction_status === 'load_error'
+            ? 'artifact could not be loaded' : 'model artifact missing';
+        const riskState = health.risk_status === 'available'
+          ? 'available (experimental)' : health.risk_status === 'load_error'
+            ? 'artifact could not be loaded (experimental)' : 'model artifact missing (experimental)';
+        addText(capabilityStatus, 'span', `Prediction: ${predictionState}.`);
+        addText(capabilityStatus, 'span', `Risk estimate: ${riskState}.`);
+        const databaseState = {
+          disabled: 'off (not configured)',
+          available: 'connected',
+          schema_missing: 'setup required',
+          driver_missing: 'driver not installed',
+          unavailable: 'not reachable'
+        }[health.analytics_database_status] || 'status unknown';
+        addText(capabilityStatus, 'span', `Optional aggregate analytics: ${databaseState}.`);
+      } catch (error) {
+        capabilityStatus.replaceChildren();
+        capabilityStatus.dataset.state = 'error';
+        addText(capabilityStatus, 'strong', 'App status unavailable');
+        addText(capabilityStatus, 'span', 'Could not check local API health. Confirm the documented API server is running.');
+      } finally {
+        capabilityStatus.setAttribute('aria-busy', 'false');
+      }
+    }
     async function post(path, payload) {
       const response = await fetch(path, {
         method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(payload)
       });
       const body = await response.json().catch(() => ({}));
-      if (!response.ok) throw new Error(body.detail || `Request failed (${response.status})`);
+      if (!response.ok) {
+        const detail = Array.isArray(body.detail)
+          ? body.detail.map((item) => `${item.loc?.slice(1).join('.') || 'input'}: ${item.msg}`).join('; ')
+          : body.detail;
+        const error = new Error(detail || `Request failed (${response.status})`);
+        error.status = response.status;
+        throw error;
+      }
       return body;
     }
+    function createLoadingCard(message) {
+      const card = document.createElement('article');
+      card.className = 'result-card';
+      addText(card, 'p', message, 'small');
+      return card;
+    }
+    function showRequestError(card, label, error) {
+      card.replaceChildren();
+      addText(card, 'h3', error.status === 503 ? `${label} unavailable` : `${label} could not be loaded`);
+      const message = error instanceof TypeError
+        ? 'Could not reach the local API. Check that the app is running, then retry.'
+        : error.message || 'The local API returned an unexpected response.';
+      addText(card, 'p', message, 'status error');
+    }
+    function renderPrediction(card, prediction) {
+      card.replaceChildren();
+      addText(card, 'h3', 'Predicted Final CGPA');
+      addText(card, 'div', Number(prediction.predicted_cgpa).toFixed(2), 'big');
+      addText(card, 'p', prediction.disclaimer, 'small');
+    }
+    function renderRisk(card, risk) {
+      card.replaceChildren();
+      addText(card, 'h3', 'Academic-risk estimate');
+      addText(card, 'div', risk.label === 'at_risk' ? 'Review may be helpful' : 'No flag at this cutoff', 'badge');
+      addText(card, 'p', `Estimated score: ${(100 * risk.risk_probability).toFixed(1)}% · threshold assumption: Final CGPA < ${risk.risk_threshold.toFixed(2)}`, 'small');
+      addText(card, 'p', risk.disclaimer, 'small');
+    }
+    function renderRecommendations(card, recommendationResult) {
+      card.replaceChildren();
+      addText(card, 'h3', 'Rule-based suggestions');
+      const suggestions = recommendationResult.recommendations || [];
+      if (!suggestions.length) addText(card, 'p', 'No routine-based suggestion was triggered by the supplied information.', 'small');
+      for (const item of suggestions) {
+        const wrapper = document.createElement('div'); wrapper.className = 'recommendation';
+        addText(wrapper, 'strong', item.title);
+        addText(wrapper, 'p', item.action);
+        addText(wrapper, 'p', `Why: ${item.why}`, 'small'); card.appendChild(wrapper);
+      }
+      addText(card, 'p', recommendationResult.disclaimer, 'small');
+    }
+
     form.addEventListener('submit', async (event) => {
       event.preventDefault();
-      if (!form.reportValidity()) return;
+      if (!form.reportValidity()) {
+        statusNode.className = 'status error';
+        statusNode.textContent = 'Please correct the highlighted student information fields before submitting.';
+        return;
+      }
       const payload = Object.fromEntries(new FormData(form));
       for (const [key, value] of Object.entries(payload)) payload[key] = Number.isNaN(Number(value)) ? value : Number(value);
-      button.disabled = true;
+
+      const controls = [...form.querySelectorAll('input, select, button')];
+      const priorDisabledStates = controls.map((control) => control.disabled);
+      controls.forEach((control) => { control.disabled = true; });
+      button.textContent = 'Loading results...';
+      resultsNode.setAttribute('aria-busy', 'true');
       statusNode.className = 'status';
-      statusNode.textContent = 'Calculating estimates…';
-      resultsNode.replaceChildren();
+      statusNode.textContent = 'Loading prediction, risk, and suggestions. Each result will appear as soon as it is ready.';
+
       try {
-        const [prediction, risk, recommendationResult] = await Promise.all([
-          post('/api/v1/predict', payload),
-          post('/api/v1/risk', payload),
-          post('/api/v1/recommendations', payload)
-        ]);
-        const predCard = document.createElement('article'); predCard.className = 'result-card';
-        addText(predCard, 'h3', 'Predicted Final CGPA');
-        addText(predCard, 'div', Number(prediction.predicted_cgpa).toFixed(2), 'big');
-        addText(predCard, 'p', prediction.disclaimer, 'small'); resultsNode.appendChild(predCard);
+        const cards = {
+          prediction: createLoadingCard('Loading CGPA estimate...'),
+          risk: createLoadingCard('Loading academic-risk estimate...'),
+          recommendations: createLoadingCard('Loading rule-based suggestions...')
+        };
+        resultsNode.replaceChildren(cards.prediction, cards.risk, cards.recommendations);
 
-        const riskCard = document.createElement('article'); riskCard.className = 'result-card';
-        addText(riskCard, 'h3', 'Academic-risk estimate');
-        addText(riskCard, 'div', risk.label === 'at_risk' ? 'Review may be helpful' : 'No flag at this cutoff', 'badge');
-        addText(riskCard, 'p', `Estimated score: ${(100 * risk.risk_probability).toFixed(1)}% · threshold assumption: Final CGPA < ${risk.risk_threshold.toFixed(2)}`, 'small');
-        addText(riskCard, 'p', risk.disclaimer, 'small'); resultsNode.appendChild(riskCard);
-
-        const recCard = document.createElement('article'); recCard.className = 'result-card';
-        addText(recCard, 'h3', 'Rule-based suggestions');
-        const suggestions = recommendationResult.recommendations || [];
-        if (!suggestions.length) addText(recCard, 'p', 'No routine-based suggestion was triggered by the supplied information.', 'small');
-        for (const item of suggestions) {
-          const wrapper = document.createElement('div'); wrapper.className = 'recommendation';
-          addText(wrapper, 'strong', item.title);
-          addText(wrapper, 'p', item.action);
-          addText(wrapper, 'p', `Why: ${item.why}`, 'small'); recCard.appendChild(wrapper);
+        const requests = [
+          {
+            label: 'Prediction',
+            request: post('/api/v1/predict', payload).then((value) => renderPrediction(cards.prediction, value))
+          },
+          {
+            label: 'Risk estimate',
+            request: post('/api/v1/risk', payload).then((value) => renderRisk(cards.risk, value))
+          },
+          {
+            label: 'Recommendations',
+            request: post('/api/v1/recommendations', payload).then((value) => renderRecommendations(cards.recommendations, value))
+          }
+        ];
+        const outcomes = await Promise.all(requests.map(async ({label, request}) => {
+          try {
+            await request;
+            return null;
+          } catch (error) {
+            const card = label === 'Prediction' ? cards.prediction
+              : label === 'Risk estimate' ? cards.risk : cards.recommendations;
+            showRequestError(card, label, error);
+            return label;
+          }
+        }));
+        const failures = outcomes.filter(Boolean);
+        if (failures.length) {
+          statusNode.className = 'status error';
+          const succeeded = outcomes.length - failures.length;
+          statusNode.textContent = succeeded
+            ? `${failures.join(', ')} unavailable or could not be loaded. ${succeeded} other result(s) loaded successfully.`
+            : `None of the three results could be loaded: ${failures.join(', ')}.`;
+        } else {
+          statusNode.textContent = 'All results are ready for review.';
         }
-        addText(recCard, 'p', recommendationResult.disclaimer, 'small'); resultsNode.appendChild(recCard);
-        statusNode.textContent = 'Results are ready for review.';
       } catch (error) {
         statusNode.className = 'status error';
-        statusNode.textContent = `Could not get all results: ${error.message}`;
-        addText(resultsNode, 'p', 'Check that the local API is running, then try again.', 'empty');
-      } finally { button.disabled = false; }
+        statusNode.textContent = `Could not finish loading results: ${error.message}`;
+      } finally {
+        controls.forEach((control, index) => { control.disabled = priorDisabledStates[index]; });
+        button.textContent = 'Get estimates and suggestions';
+        resultsNode.setAttribute('aria-busy', 'false');
+      }
     });
+
+    studyPlanForm.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      if (!studyPlanForm.reportValidity()) {
+        studyPlanStatus.className = 'status error';
+        studyPlanStatus.textContent = 'Please enter a whole number of available minutes from 0 to 480 for each day.';
+        return;
+      }
+      const availableMinutesByDay = Object.fromEntries(
+        [...studyPlanForm.querySelectorAll('[data-day]')].map((input) => [input.dataset.day, Number(input.value)])
+      );
+      const focusText = document.getElementById('focus-areas').value.trim();
+      const payload = {available_minutes_by_day: availableMinutesByDay};
+      if (focusText) payload.focus_areas = focusText.split(',').map((area) => area.trim()).filter(Boolean);
+
+      studyPlanButton.disabled = true;
+      studyPlanResults.setAttribute('aria-busy', 'true');
+      studyPlanStatus.className = 'status';
+      studyPlanStatus.textContent = 'Creating your weekly template...';
+      studyPlanResults.replaceChildren();
+      try {
+        const plan = await post('/api/v1/study-plan', payload);
+        for (const day of plan.schedule) {
+          const card = document.createElement('article');
+          card.className = 'plan-day';
+          const total = day.blocks.reduce((sum, block) => sum + (block.focus === 'Short break' ? 0 : block.minutes), 0);
+          addText(card, 'h3', `${day.day} - ${total} study minutes`);
+          if (!day.blocks.length) {
+            addText(card, 'p', 'No study time scheduled for this day.', 'small');
+          } else {
+            const list = document.createElement('ul');
+            for (const block of day.blocks) addText(list, 'li', `${block.minutes} min - ${block.focus}`);
+            card.appendChild(list);
+          }
+          if (day.unused_minutes) addText(card, 'p', `${day.unused_minutes} available minutes left unscheduled.`, 'small');
+          studyPlanResults.appendChild(card);
+        }
+        addText(studyPlanResults, 'p', plan.disclaimer, 'small');
+        studyPlanStatus.textContent = 'Weekly plan is ready. Adjust it to your schedule and needs.';
+      } catch (error) {
+        studyPlanStatus.className = 'status error';
+        studyPlanStatus.textContent = `Could not create the plan: ${error.message}`;
+      } finally {
+        studyPlanButton.disabled = false;
+        studyPlanResults.setAttribute('aria-busy', 'false');
+      }
+    });
+
+    refreshCapabilityStatus();
   </script>
 </body>
 </html>
