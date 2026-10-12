@@ -1,0 +1,35 @@
+# Local interpreter/environment
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Local data and temporary artifacts
+data/raw/*
+data/processed/*
+*.tmp
+*.log
+~$*
+
+# Credentials and local configuration
+.env
+.env.*
+!.env.example
+
+# Locally generated serialized models can contain executable pickle payloads.
+models/*.joblib
+models/*.pkl
+models/*.pickle
+models/*.json
+
+# Evaluation plots are derived from the unverified local dataset.
+reports/figures/*
+
+# Notebook checkpoints and editor/system files
+.ipynb_checkpoints/
+.DS_Store
+Thumbs.db
+.vscode/
