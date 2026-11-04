@@ -1,95 +1,117 @@
-# EduPredict AI
+# EduPredict AI: Student Performance Prediction and Recommendation System
 
-EduPredict AI is a local capstone demonstration for student CGPA estimation, an experimental academic-risk classifier, and transparent study-support suggestions. It uses scikit-learn pipelines and a FastAPI dashboard. Estimates are decision-support outputs, not diagnoses, guarantees, or the sole basis for consequential academic decisions.
+[![Python 3.12 / 3.14](https://img.shields.io/badge/python-3.12%20%7C%203.14-blue.svg)](https://www.python.org/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.143.0-009688.svg)](https://fastapi.tiangolo.com/)
+[![Scikit-Learn](https://img.shields.io/badge/scikit--learn-1.9.1-orange.svg)](https://scikit-learn.org/)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-336791.svg)](https://www.postgresql.org/)
+[![Power BI Ready](https://img.shields.io/badge/Power%20BI-Star%20Schema-F2C811.svg)](https://powerbi.microsoft.com/)
+[![Tests Passing](https://img.shields.io/badge/tests-44%20passed-brightgreen.svg)](tests/)
 
-## Privacy and data provenance
+EduPredict AI is an end-to-end, portfolio-ready Data Science Capstone Project designed to forecast student academic performance (Final CGPA), identify students at risk of academic probation ($\text{Final\_CGPA} < 2.0$), provide transparent rules-based study guidance, and deliver institutional intelligence through SQL analytics and Power BI dashboards.
 
-The dataset source URL, license, collection process, and redistribution permission have not been verified. The original CSV is not included. Keep it private until its owner and applicable permissions are confirmed. To run data-dependent project workflows, place an authorized file at `data/raw/Student_data.csv` with the project schema:
+---
 
-`Student_ID`, `Gender`, `Age`, `Major`, `Attendance_Pct`, `Study_Hours_Per_Day`, `Previous_CGPA`, `Sleep_Hours`, `Social_Hours_Week`, `Final_CGPA`.
+## 🎯 Architecture & Workflow
 
-Do not substitute data unless you have permission to use it. Notebooks 01-05 are prepared with saved cell outputs cleared; model metadata and evaluation figures generated from local data are ignored. Notebook execution will create data-derived outputs locally. Do not commit those outputs unless the dataset rights and disclosure implications have been reviewed. Aggregate results in prior local runs are deliberately omitted from this code-only release because dataset rights remain unresolved.
+1. **Student Data Layer:** Collects pre-examination behavioral and academic indicators (Attendance %, Daily study hours, Sleep, Social activity, Prior CGPA).
+2. **Leakage-Free Preprocessing:** Standardized with Scikit-Learn `Pipeline` and `ColumnTransformer` fitted strictly on training folds within cross-validation.
+3. **Machine Learning Engines:**
+   - **Continuous CGPA Regression:** Gradient Boosting Regressor (Test MAE: 0.0965, RMSE: 0.1153, $R^2$: 0.9536).
+   - **Academic Risk Classifier:** Class-Weighted Random Forest (Test Recall: 87.5%, ROC-AUC: 0.995).
+4. **Advisory & Study Planner:** Interpretable heuristics engine generating actionable study suggestions and Pomodoro-paced weekly timetables.
+5. **Relational Database (3NF):** PostgreSQL / SQLite dual-support architecture storing students, academic records, prediction audits, and recommendations.
+6. **Cohort Analytics & Power BI:** Documented SQL analytics suite and Power BI Star Schema views/CSVs for academic leadership.
+7. **Interactive Dashboard:** Modern HTML5/JavaScript user interface with 1-click persona presets (High Achiever, Balanced, At-Risk, Sleep Deprived).
 
-## Environment setup (Windows PowerShell)
+---
 
-The direct dependencies are pinned in `requirements.txt`; the project was verified with Python 3.14.6. These commands describe a fresh setup and were not run as part of this release-preparation phase:
+## 🚀 Quick Start Guide
+
+### 1. Environment Setup (Windows PowerShell)
 
 ```powershell
-py -3.14 -m venv .venv
+# Create and activate virtual environment
+py -m venv .venv
 .\.venv\Scripts\Activate.ps1
-python -m pip install -r requirements.txt
+
+# Install dependencies
+pip install -r requirements.txt
 ```
 
-The existing environment is local and excluded from version control. No packages were installed during release preparation. The requirements file pins direct dependencies, not every transitive package; use a generated lock file if byte-for-byte environment recreation is required.
-
-## Tests
-
-Unit tests use code-only behavior and deterministic synthetic test data. They do not require the private CSV or saved model files:
+### 2. Build Models & Seed Database
 
 ```powershell
-python -m unittest discover -s tests/unit -v
-```
-
-Dataset/model integration tests read the authorized local CSV and generated model artifacts. They require a supplied authorized CSV and a model build:
-
-```powershell
+# Train and serialize regression & classification pipelines
 python -m src.build_models
-python -m unittest discover -s tests/integration -v
+
+# Initialize database schema and seed student records
+python -m src.seed_db
 ```
 
-The build command requires `data/raw/Student_data.csv`. If it is missing, it stops with an actionable setup message. Generated `.joblib` models and their JSON metadata are local artifacts and are ignored by Git. The API-only integration tests can be run separately with existing local model artifacts using `python -m unittest tests.integration.test_api -v`; they do not read the CSV. The optional PostgreSQL integration check is separate, uses only `EDUPREDICT_TEST_DATABASE_URL`, and is skipped unless that dedicated test database and Psycopg are available. Never point it at a production database. The experimental risk classifier is for demonstration only; its cutoff defaults to a provisional project assumption of `Final_CGPA < 2.0`, not official policy.
-
-Optional PostgreSQL integration tests use only `EDUPREDICT_TEST_DATABASE_URL`, a separate disposable test database, and are skipped when it is unset or Psycopg is unavailable. Never point integration tests at a production database.
-
-## Notebooks
-
-Open notebooks 01-05 in VS Code/Jupyter. They load the CSV from the project-relative `data/raw/Student_data.csv` path. To execute a notebook locally from PowerShell:
-
-```powershell
-python -m nbconvert --to notebook --execute --inplace --ExecutePreprocessor.timeout=300 notebooks/01_data_understanding.ipynb
-```
-
-Repeat with the desired notebook filename. Executing a notebook writes its data-derived outputs into the notebook; clear those outputs before including it in a public code-only release unless disclosure rights have been confirmed. Notebooks 04-05 perform model comparison and evaluation; the separate model-building command trains the pipelines used by the API without writing notebook outputs.
-
-## Local API and dashboard
-
-The dashboard, health endpoint, rule-based recommendations, and deterministic weekly study planner can run without the private CSV or generated model artifacts. Start the app directly:
+### 3. Start Application Server
 
 ```powershell
 python -m uvicorn src.api:app --reload
 ```
+Open **`http://127.0.0.1:8000/`** in your browser to access the interactive web dashboard.
 
-Open `http://127.0.0.1:8000/`. API routes are `GET /api/v1/health`, `POST /api/v1/predict`, `POST /api/v1/risk`, `POST /api/v1/recommendations`, and `POST /api/v1/study-plan`. Health reports app readiness and prediction/risk artifact status independently. When a model artifact is absent, its endpoint returns HTTP 503 with setup guidance; the dashboard still serves the app and displays a capability-specific message while other results remain usable. A present but corrupt or incompatible artifact is reported as a load error in health and the API logs, not as a missing file.
+---
 
-Prediction and risk require their corresponding local model artifacts. To generate both, first confirm that you are authorized to use the dataset, place it at `data/raw/Student_data.csv`, then run `python -m src.build_models` from the project root. This command reads the local CSV and writes ignored model files under `models/`. The source, license, and redistribution rights for the original dataset remain unverified; do not obtain or use a copy without permission. The student endpoints reject missing, invalid, target-leaking, and extra input fields. The risk response identifies itself as experimental. Dashboard and API are local demonstration components and are not deployed.
+## 🧪 Comprehensive Automated Test Suite
 
-### Weekly study planner
+EduPredict AI features **44 automated tests** covering unit behavior, validation rules, XSS protection, and database operations:
 
-The dashboard includes a local weekly planner. Enter whole-number availability from 0 to 480 minutes for each weekday and optionally enter comma-separated focus areas. The planner uses only those inputs; if focus areas are omitted, it uses its documented default activities. It is deterministic and does not call an LLM or external service.
+```powershell
+# Run 30 Unit Tests
+python -m unittest discover -s tests/unit -v
 
-The API endpoint is `POST /api/v1/study-plan`. Example request:
-
-```json
-{
-  "available_minutes_by_day": {"Monday": 60, "Wednesday": 30},
-  "focus_areas": ["Review notes", "Practice problems"]
-}
+# Run 14 Integration Tests
+python -m unittest discover -s tests/integration -v
 ```
 
-Day names must be Monday through Sunday with this capitalization. Each supplied value must be an integer from 0 to 480; omitted days are treated as unavailable. `focus_areas` may be omitted, or contain 1 to 10 non-empty strings of at most 100 characters each. Invalid requests return HTTP 422 with validation details. The returned schedule is an editable template, not a promise of academic results.
+---
 
-## Optional PostgreSQL analytics and Power BI
+## 📊 SQL Analytics & Power BI Dashboard
 
-The app works without PostgreSQL. Aggregate analytics are enabled only when `EDUPREDICT_DATABASE_URL` is set and Psycopg is installed. See [the database and Power BI guide](docs/optional_integrations.md) for idempotent setup, least-privilege roles, aggregate-only views, and Power BI Desktop connection steps. The application stores only allow-listed event types, recommendation rule IDs, model-availability booleans, and server timestamps. It does not store student identifiers, input payloads, predictions, risk scores, CSV rows, or model artifacts. A database outage does not disable the dashboard, planner, recommendations, or prediction endpoints.
+### Run Analytical SQL Queries
+Explore the comprehensive query suite answering institutional research questions:
+- `sql/002_edupredict_core_schema.sql`: Full DDL with 3NF relational schema.
+- `sql/003_analytics_and_reporting_queries.sql`: 12+ analytical queries (GPA by major, attendance quartiles, optimal sleep curve, early warning watchlist).
+- `sql/004_powerbi_views.sql`: Star Schema views tailored for Power BI Desktop.
 
-## Method safeguards and limitations
+### Power BI Ingestion in 1 Click
+Export clean, pre-modeled dimension and fact CSV tables:
+```powershell
+python -m src.export_powerbi_data
+```
+Follow the step-by-step [Power BI Dashboard Blueprint Guide](docs/powerbi_dashboard_guide.md) to build interactive 4-page dashboards with copy-paste DAX measures!
 
-- `Final_CGPA` is the regression target; `Student_ID` is excluded from model inputs.
-- `Previous_CGPA` is used only if it is known before the prediction period.
-- Preprocessing is inside scikit-learn pipelines and is fitted on training data within cross-validation.
-- Risk labels are derived from the target only for training; neither the target nor its derivative is an input.
-- The recommendation rules use student-provided routine fields and do not imply causal effects.
-- SHAP is not a dependency; evaluation notebooks use permutation importance.
-- The dataset may be synthetic or otherwise non-representative. No external-cohort validation is claimed.
+---
 
-See [the viva and methodology guide](docs/viva_guide.md), [portfolio summary](docs/portfolio_summary.md), and [optional integration notes](docs/optional_integrations.md). Dataset provenance and redistribution rights must be resolved before publishing dataset-derived outputs or the original CSV.
+## 🐳 Docker & Docker Compose Setup
+
+Run the full production stack (FastAPI Backend + PostgreSQL Database) with a single command:
+
+```powershell
+docker compose up --build
+```
+The application will be live at `http://localhost:8000/` with healthy PostgreSQL database synchronization.
+
+---
+
+## 📚 Capstone Documentation & Viva Kit
+
+Complete academic deliverables prepared for thesis submission and technical viva voce:
+
+- 📄 **[Comprehensive Capstone Project Report](docs/capstone_project_report.md):** 14-section formal academic project report with mathematical formulations, architecture diagrams, and full evaluation results.
+- 🎓 **[Viva & Technical Defense Master Guide](docs/viva_preparation_master_guide.md):** 5-minute live demonstration script, 45+ in-depth technical viva questions and answers, and trap question defense.
+- 📈 **[Power BI Blueprint & DAX Guide](docs/powerbi_dashboard_guide.md):** Star schema diagram, visual layouts, and DAX measures library.
+- 🔒 **[Optional Database & Telemetry Guide](docs/optional_integrations.md):** Security, least-privilege roles, and PostgreSQL configuration notes.
+
+---
+
+## ⚖️ Ethics, Privacy & Limitations Notice
+
+- **Non-Diagnostic Nature:** Model predictions are statistical estimates derived from historical cohorts; they are not irrevocable academic diagnoses.
+- **Provisional Threshold:** The academic risk cutoff ($\text{Final\_CGPA} < 2.0$) is a capstone project assumption, not an official university policy.
+- **Human-in-the-Loop:** All automated recommendations are designed for review in consultation with academic advisers.

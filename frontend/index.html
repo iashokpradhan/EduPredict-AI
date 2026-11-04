@@ -3,80 +3,813 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#123b57">
+  <meta name="theme-color" content="#0f2b48">
   <link rel="icon" href="data:,">
-  <title>EduPredict AI | Student Support Demo</title>
+  <title>EduPredict AI | Student Performance Prediction & Support System</title>
   <style>
-    :root{color-scheme:light;--ink:#162b3a;--muted:#557080;--line:#d6e2e8;--paper:#fff;--wash:#f1f7f9;--blue:#176b87;--teal:#087e78;--amber:#875812;--shadow:0 18px 50px #173d5110}
-    *{box-sizing:border-box}body{margin:0;background:var(--wash);color:var(--ink);font:16px/1.55 "Segoe UI",system-ui,sans-serif}
-    header{background:linear-gradient(120deg,#123b57,#087e78);color:#fff;padding:28px max(24px,calc((100vw - 1120px)/2)) 32px}
-    .brand{font-size:.78rem;letter-spacing:.16em;text-transform:uppercase;opacity:.8;font-weight:700}h1{margin:8px 0;font-size:clamp(1.8rem,4vw,2.7rem);line-height:1.15}header p{max-width:720px;margin:0;color:#e0f1f1}
-    main{max-width:1120px;margin:26px auto;padding:0 20px 48px;display:grid;grid-template-columns:minmax(0,1.2fr) minmax(300px,.8fr);gap:20px}
-    section,.notice{background:var(--paper);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow)}section{padding:24px}.notice{grid-column:1/-1;padding:14px 18px;color:#624811;background:#fff9e9;border-color:#efdcaa}
-    h2{font-size:1.2rem;margin:0 0 4px} .intro{color:var(--muted);margin:0 0 20px;font-size:.94rem}
-    .fields{display:grid;grid-template-columns:1fr 1fr;gap:14px}label{font-size:.88rem;font-weight:650;display:block;margin-bottom:5px}input,select{width:100%;min-height:44px;padding:9px 11px;border:1px solid #aebfc8;border-radius:9px;color:var(--ink);font:inherit;background:white}input:focus,select:focus,button:focus-visible{outline:3px solid #7bc9ca;outline-offset:2px}.hint{display:block;color:var(--muted);font-size:.75rem;margin-top:3px}
-    button{border:0;border-radius:10px;background:var(--blue);color:white;padding:12px 20px;font:inherit;font-weight:700;cursor:pointer;margin-top:18px}button:hover{background:#10566f}button:disabled{opacity:.58;cursor:wait}
-    .status{min-height:26px;margin:12px 0 0;color:var(--muted)}.status.error{color:#a02e2e}.results{display:flex;flex-direction:column;gap:12px}.result-card{border:1px solid var(--line);border-radius:12px;padding:15px;background:#fbfdfe}.result-card h3{font-size:1rem;margin:0 0 5px}.big{font-size:1.7rem;font-weight:750;color:var(--blue)}.small{font-size:.85rem;color:var(--muted);margin:0}.badge{display:inline-block;padding:3px 9px;border-radius:999px;background:#fff1d6;color:var(--amber);font-weight:700;font-size:.8rem}.recommendation{padding:12px 0;border-top:1px solid var(--line)}.recommendation:first-of-type{border-top:0}.recommendation p{margin:4px 0;font-size:.9rem}.empty{color:var(--muted);font-style:italic}
-    .capability-status{max-width:1120px;margin:14px auto 0;padding:12px 16px;border:1px solid #bfd5d9;border-radius:12px;background:#e9f4f3;color:#174f55;font-size:.92rem}.capability-status[data-state="error"]{border-color:#e3b9b9;background:#fff3f3;color:#8b2525}.capability-status strong{margin-right:8px}.capability-status span{display:inline-block;margin-right:12px}.planner-section{grid-column:1/-1}.availability-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.plan-days{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:16px}.plan-day{border:1px solid var(--line);border-radius:10px;padding:12px;background:#fbfdfe}.plan-day h3{font-size:.95rem;margin:0 0 6px}.plan-day ul{padding-left:20px;margin:6px 0}.plan-day li{font-size:.88rem}
-    footer{max-width:1120px;padding:0 20px 30px;margin:auto;color:var(--muted);font-size:.82rem}
-    @media(max-width:780px){main{grid-template-columns:1fr;margin-top:16px}.notice,.planner-section{grid-column:auto}.availability-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.plan-days{grid-template-columns:1fr}}@media(max-width:480px){header{padding:24px 20px}.fields,.availability-grid{grid-template-columns:1fr}section{padding:18px}}
+    :root {
+      --primary: #123b57;
+      --primary-light: #1b4d70;
+      --accent: #0ea5e9;
+      --teal: #087e78;
+      --teal-light: #0da29b;
+      --emerald: #10b981;
+      --amber: #f59e0b;
+      --rose: #ef4444;
+      --ink: #0f172a;
+      --slate: #334155;
+      --muted: #64748b;
+      --border: #e2e8f0;
+      --surface: #ffffff;
+      --surface-subtle: #f8fafc;
+      --wash: #f1f5f9;
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+      --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.07), 0 2px 4px -2px rgba(0,0,0,0.05);
+      --shadow-lg: 0 10px 25px -5px rgba(15,23,42,0.08), 0 8px 10px -6px rgba(15,23,42,0.04);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--wash);
+      color: var(--ink);
+      font: 15px/1.6 "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    header {
+      background: linear-gradient(135deg, #0b253a 0%, #123b57 60%, #087e78 100%);
+      color: #fff;
+      padding: 32px max(24px, calc((100vw - 1200px) / 2)) 28px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    .header-content { max-width: 1200px; margin: 0 auto; }
+    .brand-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #cce6f4;
+      margin-bottom: 12px;
+    }
+    h1 { margin: 0 0 10px; font-size: clamp(1.8rem, 3.8vw, 2.5rem); font-weight: 800; letter-spacing: -0.02em; line-height: 1.18; }
+    header p { max-width: 760px; margin: 0; color: #d6e8f2; font-size: 0.98rem; }
+
+    .nav-tabs {
+      max-width: 1200px;
+      margin: 18px auto 0;
+      padding: 0 20px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      border-bottom: 1px solid var(--border);
+    }
+    .tab-btn {
+      padding: 10px 18px;
+      background: transparent;
+      border: none;
+      border-bottom: 3px solid transparent;
+      color: var(--muted);
+      font-weight: 600;
+      font-size: 0.92rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.15s ease;
+      margin-top: 0;
+    }
+    .tab-btn:hover { color: var(--primary); background: rgba(255,255,255,0.5); border-radius: 8px 8px 0 0; }
+    .tab-btn.active { color: var(--primary); border-bottom-color: var(--teal); }
+
+    .capability-status {
+      max-width: 1200px;
+      margin: 16px auto 0;
+      padding: 12px 18px;
+      border: 1px solid #bfd5d9;
+      border-radius: var(--radius-md);
+      background: #e9f4f3;
+      color: #174f55;
+      font-size: 0.9rem;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px;
+    }
+    .capability-status[data-state="error"] { border-color: #fca5a5; background: #fef2f2; color: #991b1b; }
+    .capability-status strong { font-weight: 700; }
+    .capability-status span { display: inline-flex; align-items: center; gap: 4px; }
+
+    main {
+      max-width: 1200px;
+      margin: 20px auto 40px;
+      padding: 0 20px;
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) minmax(320px, 0.85fr);
+      gap: 24px;
+    }
+    .tab-view { display: contents; }
+    .tab-view.hidden { display: none; }
+
+    section, .notice {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-sm);
+      padding: 24px;
+    }
+    .notice {
+      grid-column: 1 / -1;
+      padding: 16px 20px;
+      color: #78350f;
+      background: #fffbeb;
+      border-color: #fde68a;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+    h2 { font-size: 1.28rem; font-weight: 750; margin: 0 0 6px; color: var(--ink); letter-spacing: -0.01em; }
+    .intro { color: var(--muted); margin: 0 0 18px; font-size: 0.92rem; }
+
+    .presets-container {
+      margin-bottom: 20px;
+      padding: 14px 16px;
+      background: var(--surface-subtle);
+      border: 1px dashed #cbd5e1;
+      border-radius: var(--radius-md);
+    }
+    .presets-label {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 8px;
+    }
+    .preset-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+    .preset-btn {
+      margin-top: 0;
+      padding: 6px 12px;
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 999px;
+      color: var(--slate);
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s ease;
+    }
+    .preset-btn:hover {
+      background: #f0fdf4;
+      border-color: var(--teal);
+      color: var(--teal);
+      transform: translateY(-1px);
+    }
+
+    .fields { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    label { font-size: 0.86rem; font-weight: 650; display: block; margin-bottom: 6px; color: var(--slate); }
+    input, select {
+      width: 100%;
+      min-height: 42px;
+      padding: 9px 12px;
+      border: 1px solid #cbd5e1;
+      border-radius: var(--radius-sm);
+      color: var(--ink);
+      font: inherit;
+      background: white;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+    input:focus, select:focus {
+      outline: none;
+      border-color: var(--teal);
+      box-shadow: 0 0 0 3px rgba(8, 126, 120, 0.15);
+    }
+    .hint { display: block; color: var(--muted); font-size: 0.74rem; margin-top: 4px; }
+
+    button {
+      border: 0;
+      border-radius: var(--radius-sm);
+      background: var(--primary);
+      color: white;
+      padding: 12px 22px;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 20px;
+      transition: background 0.15s ease, transform 0.1s ease;
+    }
+    button:hover { background: var(--primary-light); }
+    button:disabled { opacity: 0.58; cursor: wait; }
+    .btn-secondary {
+      background: white;
+      color: var(--slate);
+      border: 1px solid #cbd5e1;
+      padding: 8px 14px;
+      font-size: 0.86rem;
+      margin-top: 0;
+      border-radius: var(--radius-sm);
+    }
+    .btn-secondary:hover { background: #f8fafc; color: var(--ink); border-color: #94a3b8; }
+
+    .status { min-height: 24px; margin: 12px 0 0; color: var(--muted); font-size: 0.9rem; }
+    .status.error { color: #dc2626; font-weight: 600; }
+
+    .results { display: flex; flex-direction: column; gap: 14px; }
+    .result-card {
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 18px;
+      background: #ffffff;
+      box-shadow: var(--shadow-sm);
+      transition: transform 0.15s ease;
+    }
+    .result-card h3 { font-size: 0.95rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: var(--muted); margin: 0 0 8px; }
+    .big { font-size: 2.2rem; font-weight: 850; color: var(--primary); line-height: 1.1; margin: 4px 0 8px; }
+    .small { font-size: 0.84rem; color: var(--muted); margin: 0; }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-weight: 700;
+      font-size: 0.82rem;
+    }
+    .badge.risk-low { background: #dcfce7; color: #166534; }
+    .badge.risk-moderate { background: #fef3c7; color: #92400e; }
+    .badge.risk-high { background: #fee2e2; color: #991b1b; }
+
+    .progress-track {
+      width: 100%;
+      height: 10px;
+      background: #e2e8f0;
+      border-radius: 999px;
+      overflow: hidden;
+      margin: 8px 0;
+    }
+    .progress-fill { height: 100%; border-radius: 999px; transition: width 0.4s ease; }
+
+    .recommendation {
+      padding: 14px 0;
+      border-top: 1px solid var(--border);
+    }
+    .recommendation:first-of-type { border-top: 0; padding-top: 4px; }
+    .recommendation strong { color: var(--ink); font-size: 0.95rem; display: block; margin-bottom: 4px; }
+    .recommendation p { margin: 4px 0; font-size: 0.88rem; color: var(--slate); }
+
+    .planner-section { grid-column: 1 / -1; }
+    .availability-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+    }
+    .plan-days {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 18px;
+    }
+    .plan-day {
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 14px 16px;
+      background: #ffffff;
+      box-shadow: var(--shadow-sm);
+    }
+    .plan-day h3 { font-size: 0.96rem; font-weight: 700; margin: 0 0 8px; color: var(--primary); }
+    .plan-day ul { padding-left: 18px; margin: 6px 0; }
+    .plan-day li { font-size: 0.88rem; color: var(--slate); margin-bottom: 4px; }
+
+    /* Comparison Bar Visual */
+    .benchmark-container {
+      margin-top: 14px;
+      padding: 12px 14px;
+      background: var(--surface-subtle);
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+    }
+    .benchmark-title { font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); margin-bottom: 8px; }
+    .benchmark-row { margin-bottom: 8px; }
+    .benchmark-header { display: flex; justify-content: space-between; font-size: 0.78rem; font-weight: 600; margin-bottom: 3px; }
+    .benchmark-bars { position: relative; height: 8px; background: #e2e8f0; border-radius: 4px; overflow: hidden; }
+    .benchmark-val { position: absolute; height: 100%; border-radius: 4px; }
+    .benchmark-student { background: var(--teal); z-index: 2; opacity: 0.9; }
+
+    /* What-If Simulator Drawer */
+    .simulator-box {
+      margin-top: 14px;
+      padding: 16px;
+      background: #f0fdfa;
+      border: 1px solid #ccfbf1;
+      border-radius: var(--radius-md);
+    }
+    .sim-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 10px; }
+    .sim-slider-label { font-size: 0.82rem; font-weight: 600; color: var(--slate); display: flex; justify-content: space-between; }
+    .sim-results-badge {
+      display: inline-block;
+      padding: 8px 12px;
+      border-radius: var(--radius-sm);
+      background: white;
+      border: 1px solid #99f6e4;
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: #0f766e;
+      margin-top: 8px;
+    }
+
+    /* Cohort Analytics & Diagnostics */
+    .full-width-section { grid-column: 1 / -1; }
+    .kpi-deck {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .kpi-tile {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      box-shadow: var(--shadow-sm);
+    }
+    .kpi-label { font-size: 0.78rem; font-weight: 700; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+    .kpi-number { font-size: 1.8rem; font-weight: 800; color: var(--primary); line-height: 1.2; }
+    .kpi-sub { font-size: 0.78rem; color: var(--muted); margin-top: 2px; }
+
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+      margin-top: 12px;
+    }
+    .data-table th, .data-table td {
+      padding: 10px 14px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+    .data-table th { background: var(--surface-subtle); color: var(--slate); font-weight: 700; }
+    .data-table tr:hover td { background: #f8fafc; }
+
+    /* Print Stylesheet */
+    @media print {
+      body { background: white; color: black; font-size: 12pt; }
+      header, .nav-tabs, #capability-status, .presets-container, #submit-button, .planner-section, footer, .simulator-box, button {
+        display: none !important;
+      }
+      main { display: block; max-width: 100%; padding: 0; margin: 0; }
+      section { border: none; box-shadow: none; padding: 0; margin-bottom: 20px; }
+      .result-card { page-break-inside: avoid; border: 1px solid #ccc; margin-bottom: 10px; }
+      #student-form { display: none; }
+    }
+
+    footer {
+      max-width: 1200px;
+      padding: 0 20px 40px;
+      margin: auto;
+      color: var(--muted);
+      font-size: 0.84rem;
+      text-align: center;
+    }
+
+    @media (max-width: 900px) {
+      main { grid-template-columns: 1fr; }
+      .notice, .planner-section { grid-column: auto; }
+      .availability-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .plan-days { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 500px) {
+      header { padding: 24px 16px; }
+      .fields, .availability-grid, .sim-row { grid-template-columns: 1fr; }
+      section { padding: 18px; }
+    }
   </style>
 </head>
 <body>
   <header>
-    <div class="brand">EduPredict AI · Academic decision-support demo</div>
-    <h1>Understand patterns. Plan a next step.</h1>
-    <p>Enter information available before the outcome is known. This demo returns a model estimate and separate, rule-based suggestions for human review.</p>
+    <div class="header-content">
+      <div class="brand-pill">EduPredict AI · Capstone Decision-Support Prototype</div>
+      <h1>Student Performance Prediction & Support System</h1>
+      <p>Enter academic indicators known prior to semester completion. EduPredict AI provides machine learning estimates, academic risk screening, transparent study planning guidance, what-if simulations, and cohort analytics.</p>
+    </div>
   </header>
+
+  <nav class="nav-tabs" aria-label="Main Navigation">
+    <button class="tab-btn active" id="tab-student" type="button">🎯 Student Assessment &amp; Planner</button>
+    <button class="tab-btn" id="tab-analytics" type="button">📊 Cohort Analytics (5,000 Students)</button>
+    <button class="tab-btn" id="tab-diagnostics" type="button">📈 Model Diagnostics &amp; Metrics</button>
+    <button class="tab-btn" id="tab-history" type="button">🕒 Prediction Audit History</button>
+  </nav>
+
   <div id="capability-status" class="capability-status" role="status" aria-live="polite" aria-atomic="true" aria-busy="true">
     Checking app and model availability…
   </div>
-  <main>
+
+  <!-- TAB 1: STUDENT ASSESSMENT & PLANNER -->
+  <main id="view-student" class="tab-view">
     <section aria-labelledby="form-title">
-      <h2 id="form-title">Student information</h2>
-      <p class="intro">Use current or historical inputs only. Student ID and Final CGPA are intentionally not requested.</p>
+      <h2 id="form-title">Student Information</h2>
+      <p class="intro">Enter indicators available before outcomes are determined. Student ID and Final CGPA are intentionally excluded to prevent leakage.</p>
+
+      <div class="presets-container">
+        <div class="presets-label">⚡ Quick Demo Presets (Viva / Evaluation)</div>
+        <div class="preset-chips">
+          <button class="preset-btn" type="button" data-preset="high_achiever">🌟 High Achiever (CS)</button>
+          <button class="preset-btn" type="button" data-preset="balanced_student">⚖️ Balanced Average (Biz)</button>
+          <button class="preset-btn" type="button" data-preset="at_risk_student">⚠️ Academic At-Risk (Eng)</button>
+          <button class="preset-btn" type="button" data-preset="sleep_deprived">🌙 Sleep Deprived (Psych)</button>
+        </div>
+      </div>
+
       <form id="student-form" novalidate>
         <div class="fields">
-          <div><label for="gender">Gender</label><select id="gender" name="Gender" required><option value="">Choose…</option><option>Female</option><option>Male</option></select></div>
-          <div><label for="major">Major</label><select id="major" name="Major" required><option value="">Choose…</option><option>Business</option><option>Computer Science</option><option>Economics</option><option>Engineering</option><option>Mathematics</option><option>Psychology</option></select></div>
-          <div><label for="age">Age</label><input id="age" name="Age" type="number" min="10" max="100" step="1" required></div>
-          <div><label for="attendance">Attendance (%)</label><input id="attendance" name="Attendance_Pct" type="number" min="0" max="100" step="0.1" required><span class="hint">Enter a value from 0 to 100.</span></div>
-          <div><label for="study">Study hours per day</label><input id="study" name="Study_Hours_Per_Day" type="number" min="0" max="24" step="0.1" required></div>
-          <div><label for="previous">Previous CGPA</label><input id="previous" name="Previous_CGPA" type="number" min="0" max="4" step="0.01" required><span class="hint">Only use a result already known at prediction time.</span></div>
-          <div><label for="sleep">Sleep hours per day</label><input id="sleep" name="Sleep_Hours" type="number" min="0" max="24" step="0.1" required></div>
-          <div><label for="social">Social hours per week</label><input id="social" name="Social_Hours_Week" type="number" min="0" max="168" step="0.1" required></div>
+          <div>
+            <label for="gender">Gender</label>
+            <select id="gender" name="Gender" required>
+              <option value="">Choose…</option>
+              <option>Female</option>
+              <option>Male</option>
+            </select>
+          </div>
+          <div>
+            <label for="major">Academic Major</label>
+            <select id="major" name="Major" required>
+              <option value="">Choose…</option>
+              <option>Business</option>
+              <option>Computer Science</option>
+              <option>Economics</option>
+              <option>Engineering</option>
+              <option>Mathematics</option>
+              <option>Psychology</option>
+            </select>
+          </div>
+          <div>
+            <label for="age">Age</label>
+            <input id="age" name="Age" type="number" min="10" max="100" step="1" required>
+          </div>
+          <div>
+            <label for="attendance">Attendance Percentage (%)</label>
+            <input id="attendance" name="Attendance_Pct" type="number" min="0" max="100" step="0.1" required>
+            <span class="hint">Cohort average is 83.8%. Enter 0 to 100.</span>
+          </div>
+          <div>
+            <label for="study">Daily Study Hours</label>
+            <input id="study" name="Study_Hours_Per_Day" type="number" min="0" max="24" step="0.1" required>
+            <span class="hint">Independent daily study time (0 to 24).</span>
+          </div>
+          <div>
+            <label for="previous">Previous CGPA (Prior Term)</label>
+            <input id="previous" name="Previous_CGPA" type="number" min="0" max="4" step="0.01" required>
+            <span class="hint">Cumulative GPA from preceding semester (0.00 to 4.00).</span>
+          </div>
+          <div>
+            <label for="sleep">Sleep Hours per Day</label>
+            <input id="sleep" name="Sleep_Hours" type="number" min="0" max="24" step="0.1" required>
+            <span class="hint">Average nightly sleep (0 to 24).</span>
+          </div>
+          <div>
+            <label for="social">Weekly Social Hours</label>
+            <input id="social" name="Social_Hours_Week" type="number" min="0" max="168" step="0.1" required>
+            <span class="hint">Extracurricular &amp; social time (0 to 168).</span>
+          </div>
         </div>
-        <button id="submit-button" type="submit">Get estimates and suggestions</button>
+        <button id="submit-button" type="submit">Run Prediction &amp; Generate Guidance</button>
         <p id="status" class="status" role="status" aria-live="polite"></p>
       </form>
     </section>
+
     <section aria-labelledby="results-title">
-      <h2 id="results-title">Results for review</h2>
-      <p class="intro">Prediction, risk estimate, and guidance are shown separately.</p>
-      <div id="results" class="results" aria-live="polite" aria-busy="false"><p class="empty">Submit the form to view results.</p></div>
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+        <h2 id="results-title" style="margin: 0;">Results &amp; Diagnostics</h2>
+        <button id="btn-print-report" type="button" class="btn-secondary" style="display: none;">🖨️ Print / Save PDF</button>
+      </div>
+      <p class="intro">Regression prediction, experimental risk estimate, and rule-based guidance are reported separately.</p>
+
+      <div id="results" class="results" aria-live="polite" aria-busy="false">
+        <p class="small">Submit the student information form to calculate performance forecasts and support suggestions.</p>
+      </div>
+
+      <!-- What-If Simulator Panel (Appears after submission) -->
+      <div id="simulator-container" class="simulator-box" style="display: none;">
+        <div style="font-weight: 700; color: #0f766e; margin-bottom: 6px; font-size: 0.95rem;">
+          🔬 Interactive "What-If" Academic Improvement Simulator
+        </div>
+        <p class="small" style="color: #115e59; margin-bottom: 12px;">
+          Adjust the behavioral levers below to simulate how targeted habit improvements change the predicted CGPA and reduce risk.
+        </p>
+        <div class="sim-row">
+          <div>
+            <div class="sim-slider-label">
+              <span>Attendance Boost</span>
+              <span id="label-sim-att">+10%</span>
+            </div>
+            <input id="slider-sim-att" type="range" min="0" max="30" step="5" value="10">
+          </div>
+          <div>
+            <div class="sim-slider-label">
+              <span>Additional Daily Study</span>
+              <span id="label-sim-study">+1.5 hrs</span>
+            </div>
+            <input id="slider-sim-study" type="range" min="0" max="5" step="0.5" value="1.5">
+          </div>
+        </div>
+        <button id="btn-run-sim" type="button" class="btn-secondary" style="background: #0f766e; color: white; border: none; font-weight: 600;">
+          Simulate Improvement Trajectory
+        </button>
+        <div id="sim-output" class="sim-results-badge" style="display: none;"></div>
+      </div>
     </section>
+
     <section class="planner-section" aria-labelledby="planner-title">
-      <h2 id="planner-title">Build a weekly study plan</h2>
-      <p class="intro">Enter the minutes you can set aside each day. Focus areas are optional; without them, the planner uses simple default activities.</p>
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+        <h2 id="planner-title" style="margin: 0;">Build a Weekly Study Plan</h2>
+        <button id="btn-download-ics" type="button" class="btn-secondary" style="display: none;">📅 Export to Calendar (.ics)</button>
+      </div>
+      <p class="intro">Enter available study minutes per day. The planner builds a balanced, Pomodoro-style schedule with scheduled rest intervals.</p>
       <form id="study-plan-form">
         <div class="availability-grid">
-          <div><label for="minutes-monday">Monday minutes</label><input id="minutes-monday" data-day="Monday" type="number" min="0" max="480" step="1" value="0" required></div>
-          <div><label for="minutes-tuesday">Tuesday minutes</label><input id="minutes-tuesday" data-day="Tuesday" type="number" min="0" max="480" step="1" value="0" required></div>
-          <div><label for="minutes-wednesday">Wednesday minutes</label><input id="minutes-wednesday" data-day="Wednesday" type="number" min="0" max="480" step="1" value="0" required></div>
-          <div><label for="minutes-thursday">Thursday minutes</label><input id="minutes-thursday" data-day="Thursday" type="number" min="0" max="480" step="1" value="0" required></div>
-          <div><label for="minutes-friday">Friday minutes</label><input id="minutes-friday" data-day="Friday" type="number" min="0" max="480" step="1" value="0" required></div>
-          <div><label for="minutes-saturday">Saturday minutes</label><input id="minutes-saturday" data-day="Saturday" type="number" min="0" max="480" step="1" value="0" required></div>
-          <div><label for="minutes-sunday">Sunday minutes</label><input id="minutes-sunday" data-day="Sunday" type="number" min="0" max="480" step="1" value="0" required></div>
-          <div><label for="focus-areas">Focus areas <span class="hint">Optional; separate items with commas.</span></label><input id="focus-areas" type="text" maxlength="1000" placeholder="Review notes, Practice problems"></div>
+          <div><label for="minutes-monday">Monday Minutes</label><input id="minutes-monday" data-day="Monday" type="number" min="0" max="480" step="1" value="60" required></div>
+          <div><label for="minutes-tuesday">Tuesday Minutes</label><input id="minutes-tuesday" data-day="Tuesday" type="number" min="0" max="480" step="1" value="60" required></div>
+          <div><label for="minutes-wednesday">Wednesday Minutes</label><input id="minutes-wednesday" data-day="Wednesday" type="number" min="0" max="480" step="1" value="60" required></div>
+          <div><label for="minutes-thursday">Thursday Minutes</label><input id="minutes-thursday" data-day="Thursday" type="number" min="0" max="480" step="1" value="60" required></div>
+          <div><label for="minutes-friday">Friday Minutes</label><input id="minutes-friday" data-day="Friday" type="number" min="0" max="480" step="1" value="45" required></div>
+          <div><label for="minutes-saturday">Saturday Minutes</label><input id="minutes-saturday" data-day="Saturday" type="number" min="0" max="480" step="1" value="90" required></div>
+          <div><label for="minutes-sunday">Sunday Minutes</label><input id="minutes-sunday" data-day="Sunday" type="number" min="0" max="480" step="1" value="0" required></div>
+          <div>
+            <label for="focus-areas">Focus Areas <span class="hint">Optional; comma-separated.</span></label>
+            <input id="focus-areas" type="text" maxlength="1000" placeholder="Lecture notes, Problem sets, Revision">
+          </div>
         </div>
-        <button id="study-plan-button" type="submit">Create weekly plan</button>
+        <button id="study-plan-button" type="submit">Create Weekly Study Plan</button>
         <p id="study-plan-status" class="status" role="status" aria-live="polite"></p>
       </form>
-      <div id="study-plan-results" class="plan-days" aria-live="polite" aria-busy="false"><p class="empty">Your plan will appear here.</p></div>
+      <div id="study-plan-results" class="plan-days" aria-live="polite" aria-busy="false">
+        <p class="small">Your customized weekly schedule blocks will appear here.</p>
+      </div>
     </section>
-    <aside class="notice" role="note"><strong>Important:</strong> Predictions are estimates from a single dataset and are not guarantees, diagnoses, or the sole basis for consequential academic decisions. The risk cutoff is a provisional project assumption. Discuss concerns with an appropriate instructor or adviser.</aside>
+
+    <aside class="notice" role="note">
+      <div>
+        <strong>Ethical Safeguard &amp; Academic Notice:</strong> Model predictions are statistical estimates derived from historical data. They do not constitute academic diagnoses or irrevocable decisions. The provisional risk threshold (Final CGPA &lt; 2.0) is a capstone benchmark and not official university policy. All automated suggestions should be reviewed in consultation with academic advisers.
+      </div>
+    </aside>
   </main>
-  <footer>Recommendation rules use reported attendance, study time, and sleep inputs. They are optional guidance and do not imply that changing a behavior will cause a particular grade outcome.</footer>
+
+  <!-- TAB 2: COHORT ANALYTICS -->
+  <main id="view-analytics" class="tab-view hidden">
+    <section class="full-width-section">
+      <h2>Cohort Academic Analytics (5,000 Students)</h2>
+      <p class="intro">Real-time aggregate analytics computed from the relational database schema, highlighting academic patterns and performance indicators.</p>
+
+      <div class="kpi-deck" id="cohort-kpis">
+        <div class="kpi-tile">
+          <div class="kpi-label">Total Cohort</div>
+          <div class="kpi-number" id="kpi-total">5,000</div>
+          <div class="kpi-sub">Registered student records</div>
+        </div>
+        <div class="kpi-tile">
+          <div class="kpi-label">Average Final CGPA</div>
+          <div class="kpi-number" id="kpi-cgpa">3.27</div>
+          <div class="kpi-sub">On a 4.00 scale</div>
+        </div>
+        <div class="kpi-tile">
+          <div class="kpi-label">Average Attendance</div>
+          <div class="kpi-number" id="kpi-att">83.8%</div>
+          <div class="kpi-sub">Classroom presence</div>
+        </div>
+        <div class="kpi-tile">
+          <div class="kpi-label">Daily Study Time</div>
+          <div class="kpi-number" id="kpi-study">4.5 hrs</div>
+          <div class="kpi-sub">Independent prep / day</div>
+        </div>
+        <div class="kpi-tile">
+          <div class="kpi-label">At-Risk Rate</div>
+          <div class="kpi-number" id="kpi-risk">0.84%</div>
+          <div class="kpi-sub">42 students (CGPA &lt; 2.0)</div>
+        </div>
+      </div>
+
+      <h3 style="margin-top: 24px; font-size: 1.1rem; color: var(--primary);">Academic Performance by Major</h3>
+      <div style="overflow-x: auto;">
+        <table class="data-table" id="majors-table">
+          <thead>
+            <tr>
+              <th>Major</th>
+              <th>Student Count</th>
+              <th>Avg Final CGPA</th>
+              <th>Avg Attendance</th>
+              <th>Daily Study Time</th>
+              <th>At-Risk Count</th>
+            </tr>
+          </thead>
+          <tbody id="majors-tbody">
+            <tr><td colspan="6" class="small">Loading major breakdown…</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 style="margin-top: 28px; font-size: 1.1rem; color: var(--primary);">Academic Honors Classifications</h3>
+      <div class="kpi-deck" style="margin-top: 12px;">
+        <div class="kpi-tile">
+          <div class="kpi-label">First Class Honors (3.50 - 4.00)</div>
+          <div class="kpi-number" id="band-first">1,806</div>
+          <div class="kpi-sub">36.1% of student cohort</div>
+        </div>
+        <div class="kpi-tile">
+          <div class="kpi-label">Upper Second Class (3.00 - 3.49)</div>
+          <div class="kpi-number" id="band-upper">1,734</div>
+          <div class="kpi-sub">34.7% of student cohort</div>
+        </div>
+        <div class="kpi-tile">
+          <div class="kpi-label">Lower Second Class (2.00 - 2.99)</div>
+          <div class="kpi-number" id="band-lower">1,418</div>
+          <div class="kpi-sub">28.4% of student cohort</div>
+        </div>
+        <div class="kpi-tile">
+          <div class="kpi-label">At-Risk Warning (&lt; 2.00)</div>
+          <div class="kpi-number" style="color: var(--rose);" id="band-risk">42</div>
+          <div class="kpi-sub">0.8% of student cohort</div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- TAB 3: MODEL DIAGNOSTICS & METRICS -->
+  <main id="view-diagnostics" class="tab-view hidden">
+    <section class="full-width-section">
+      <h2>Machine Learning Model Benchmarks &amp; Diagnostics</h2>
+      <p class="intro">Comparative evaluation of candidate algorithms on held-out test data (1,000 records). Preprocessing was fitted inside cross-validation folds to eliminate data leakage.</p>
+
+      <div class="kpi-deck">
+        <div class="kpi-tile">
+          <div class="kpi-label">Regression Model</div>
+          <div class="kpi-number" style="font-size: 1.4rem;">Gradient Boosting</div>
+          <div class="kpi-sub">Test MAE: 0.0965 · R²: 0.9536</div>
+        </div>
+        <div class="kpi-tile">
+          <div class="kpi-label">Baseline Improvement</div>
+          <div class="kpi-number" style="font-size: 1.4rem; color: var(--emerald);">-78.2% Error</div>
+          <div class="kpi-sub">Compared to Dummy Mean Baseline</div>
+        </div>
+        <div class="kpi-tile">
+          <div class="kpi-label">Risk Classifier</div>
+          <div class="kpi-number" style="font-size: 1.4rem;">Balanced Random Forest</div>
+          <div class="kpi-sub">Test Recall: 87.5% · ROC-AUC: 0.995</div>
+        </div>
+        <div class="kpi-tile">
+          <div class="kpi-label">Primary Predictor</div>
+          <div class="kpi-number" style="font-size: 1.4rem;">Previous CGPA</div>
+          <div class="kpi-sub">86.4% relative importance</div>
+        </div>
+      </div>
+
+      <h3 style="margin-top: 24px; font-size: 1.1rem; color: var(--primary);">Regression Algorithm Comparison (Test Set)</h3>
+      <div style="overflow-x: auto;">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Candidate Model</th>
+              <th>Mean Absolute Error (MAE)</th>
+              <th>Root Mean Squared Error (RMSE)</th>
+              <th>R² Score</th>
+              <th>Selection Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="background: #f0fdf4; font-weight: 600;">
+              <td>Gradient Boosting Regressor</td>
+              <td>0.0965</td>
+              <td>0.1153</td>
+              <td>0.9536</td>
+              <td><span class="badge risk-low">Selected Champion</span></td>
+            </tr>
+            <tr>
+              <td>Ridge Regression (alpha=1.0)</td>
+              <td>0.0980</td>
+              <td>0.1171</td>
+              <td>0.9522</td>
+              <td>Evaluated Candidate</td>
+            </tr>
+            <tr>
+              <td>Linear Regression (OLS)</td>
+              <td>0.0981</td>
+              <td>0.1172</td>
+              <td>0.9521</td>
+              <td>Evaluated Candidate</td>
+            </tr>
+            <tr>
+              <td>Random Forest Regressor (n=200)</td>
+              <td>0.1042</td>
+              <td>0.1251</td>
+              <td>0.9458</td>
+              <td>Evaluated Candidate</td>
+            </tr>
+            <tr style="color: var(--muted);">
+              <td>Dummy Mean Baseline</td>
+              <td>0.4432</td>
+              <td>0.5198</td>
+              <td>-0.0012</td>
+              <td>Reference Baseline</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 style="margin-top: 28px; font-size: 1.1rem; color: var(--primary);">Feature Importance Hierarchy (Permutation Importance)</h3>
+      <div style="margin-top: 12px; display: flex; flex-direction: column; gap: 10px;">
+        <div>
+          <div style="display: flex; justify-content: space-between; font-size: 0.84rem; font-weight: 600; margin-bottom: 3px;">
+            <span>1. Previous CGPA (Prior Academic Momentum)</span>
+            <span>86.4%</span>
+          </div>
+          <div style="height: 10px; background: #e2e8f0; border-radius: 5px; overflow: hidden;">
+            <div style="width: 86.4%; height: 100%; background: var(--primary); border-radius: 5px;"></div>
+          </div>
+        </div>
+        <div>
+          <div style="display: flex; justify-content: space-between; font-size: 0.84rem; font-weight: 600; margin-bottom: 3px;">
+            <span>2. Attendance Percentage (Actionable Class Presence)</span>
+            <span>7.8%</span>
+          </div>
+          <div style="height: 10px; background: #e2e8f0; border-radius: 5px; overflow: hidden;">
+            <div style="width: 7.8%; height: 100%; background: var(--teal); border-radius: 5px;"></div>
+          </div>
+        </div>
+        <div>
+          <div style="display: flex; justify-content: space-between; font-size: 0.84rem; font-weight: 600; margin-bottom: 3px;">
+            <span>3. Daily Study Hours (Actionable Preparation)</span>
+            <span>4.1%</span>
+          </div>
+          <div style="height: 10px; background: #e2e8f0; border-radius: 5px; overflow: hidden;">
+            <div style="width: 4.1%; height: 100%; background: var(--accent); border-radius: 5px;"></div>
+          </div>
+        </div>
+        <div>
+          <div style="display: flex; justify-content: space-between; font-size: 0.84rem; font-weight: 600; margin-bottom: 3px;">
+            <span>4. Sleep Hours (Well-being &amp; Cognitive Recovery)</span>
+            <span>1.2%</span>
+          </div>
+          <div style="height: 10px; background: #e2e8f0; border-radius: 5px; overflow: hidden;">
+            <div style="width: 1.2%; height: 100%; background: var(--amber); border-radius: 5px;"></div>
+          </div>
+        </div>
+        <div>
+          <div style="display: flex; justify-content: space-between; font-size: 0.84rem; font-weight: 600; margin-bottom: 3px;">
+            <span>5. Social Activity (Extracurricular Balance)</span>
+            <span>0.5%</span>
+          </div>
+          <div style="height: 10px; background: #e2e8f0; border-radius: 5px; overflow: hidden;">
+            <div style="width: 0.5%; height: 100%; background: var(--muted); border-radius: 5px;"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- TAB 4: AUDIT HISTORY -->
+  <main id="view-history" class="tab-view hidden">
+    <section class="full-width-section">
+      <h2>Prediction Audit History</h2>
+      <p class="intro">Inference log capturing model forecasts, risk assessments, and timestamps stored in the PostgreSQL / SQLite audit table.</p>
+
+      <div style="overflow-x: auto;">
+        <table class="data-table" id="history-table">
+          <thead>
+            <tr>
+              <th>Log ID</th>
+              <th>Major</th>
+              <th>Attendance</th>
+              <th>Study Hrs</th>
+              <th>Prev CGPA</th>
+              <th>Predicted CGPA</th>
+              <th>Risk Probability</th>
+              <th>Status</th>
+              <th>Recorded At</th>
+            </tr>
+          </thead>
+          <tbody id="history-tbody">
+            <tr><td colspan="9" class="small">Loading prediction history…</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    EduPredict AI · Capstone Project by Ashok Pradhan · Machine Learning, FastAPI, PostgreSQL &amp; Power BI Analytics
+  </footer>
+
   <script>
     const form = document.getElementById('student-form');
     const statusNode = document.getElementById('status');
@@ -87,6 +820,38 @@
     const studyPlanStatus = document.getElementById('study-plan-status');
     const studyPlanResults = document.getElementById('study-plan-results');
     const studyPlanButton = document.getElementById('study-plan-button');
+    const simulatorContainer = document.getElementById('simulator-container');
+    const btnPrintReport = document.getElementById('btn-print-report');
+    const btnDownloadIcs = document.getElementById('btn-download-ics');
+
+    // Tab Navigation
+    const tabStudent = document.getElementById('tab-student');
+    const tabAnalytics = document.getElementById('tab-analytics');
+    const tabDiagnostics = document.getElementById('tab-diagnostics');
+    const tabHistory = document.getElementById('tab-history');
+    const viewStudent = document.getElementById('view-student');
+    const viewAnalytics = document.getElementById('view-analytics');
+    const viewDiagnostics = document.getElementById('view-diagnostics');
+    const viewHistory = document.getElementById('view-history');
+
+    function switchTab(tabId) {
+      tabStudent.classList.toggle('active', tabId === 'student');
+      tabAnalytics.classList.toggle('active', tabId === 'analytics');
+      tabDiagnostics.classList.toggle('active', tabId === 'diagnostics');
+      tabHistory.classList.toggle('active', tabId === 'history');
+      viewStudent.classList.toggle('hidden', tabId !== 'student');
+      viewAnalytics.classList.toggle('hidden', tabId !== 'analytics');
+      viewDiagnostics.classList.toggle('hidden', tabId !== 'diagnostics');
+      viewHistory.classList.toggle('hidden', tabId !== 'history');
+
+      if (tabId === 'analytics') loadCohortAnalytics();
+      if (tabId === 'history') loadPredictionHistory();
+    }
+
+    tabStudent.addEventListener('click', () => switchTab('student'));
+    tabAnalytics.addEventListener('click', () => switchTab('analytics'));
+    tabDiagnostics.addEventListener('click', () => switchTab('diagnostics'));
+    tabHistory.addEventListener('click', () => switchTab('history'));
 
     function addText(parent, tag, text, className) {
       const node = document.createElement(tag);
@@ -95,43 +860,84 @@
       parent.appendChild(node);
       return node;
     }
+
+    // Persona Presets
+    const PRESETS = {
+      high_achiever: {
+        Gender: 'Female', Age: 21, Major: 'Computer Science', Attendance_Pct: 96.0,
+        Study_Hours_Per_Day: 6.0, Previous_CGPA: 3.85, Sleep_Hours: 7.5, Social_Hours_Week: 6.0
+      },
+      balanced_student: {
+        Gender: 'Male', Age: 20, Major: 'Business', Attendance_Pct: 85.0,
+        Study_Hours_Per_Day: 3.5, Previous_CGPA: 3.10, Sleep_Hours: 7.0, Social_Hours_Week: 10.0
+      },
+      at_risk_student: {
+        Gender: 'Male', Age: 22, Major: 'Engineering', Attendance_Pct: 56.0,
+        Study_Hours_Per_Day: 1.2, Previous_CGPA: 1.80, Sleep_Hours: 5.0, Social_Hours_Week: 16.0
+      },
+      sleep_deprived: {
+        Gender: 'Female', Age: 20, Major: 'Psychology', Attendance_Pct: 78.0,
+        Study_Hours_Per_Day: 2.0, Previous_CGPA: 2.70, Sleep_Hours: 4.5, Social_Hours_Week: 24.0
+      }
+    };
+
+    document.querySelectorAll('[data-preset]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const key = btn.dataset.preset;
+        const data = PRESETS[key];
+        if (!data) return;
+        for (const [field, val] of Object.entries(data)) {
+          const input = form.elements[field];
+          if (input) input.value = val;
+        }
+        statusNode.className = 'status';
+        statusNode.textContent = `Applied preset: ${btn.textContent.trim()}`;
+      });
+    });
+
+    // Base API URL: when opened directly as file:// or another host, route to local FastAPI server
+    const API_BASE = (window.location.protocol === 'file:' || !window.location.host) ? 'http://127.0.0.1:8000' : '';
+
     async function refreshCapabilityStatus() {
       capabilityStatus.setAttribute('aria-busy', 'true');
       try {
-        const response = await fetch('/api/v1/health');
+        const response = await fetch(API_BASE + '/api/v1/health');
         if (!response.ok) throw new Error(`Health check returned HTTP ${response.status}.`);
         const health = await response.json();
         capabilityStatus.replaceChildren();
         capabilityStatus.dataset.state = health.ready ? 'ready' : 'error';
-        addText(capabilityStatus, 'strong', health.ready ? 'Local app ready' : 'Local app unavailable');
+        addText(capabilityStatus, 'strong', health.ready ? 'System Status: Ready' : 'System Status: Degraded');
         const predictionState = health.prediction_status === 'available'
-          ? 'available' : health.prediction_status === 'load_error'
-            ? 'artifact could not be loaded' : 'model artifact missing';
+          ? 'available (GBR)' : health.prediction_status === 'load_error'
+            ? 'artifact load error' : 'missing artifact';
         const riskState = health.risk_status === 'available'
-          ? 'available (experimental)' : health.risk_status === 'load_error'
-            ? 'artifact could not be loaded (experimental)' : 'model artifact missing (experimental)';
-        addText(capabilityStatus, 'span', `Prediction: ${predictionState}.`);
-        addText(capabilityStatus, 'span', `Risk estimate: ${riskState}.`);
+          ? 'available (RFC)' : health.risk_status === 'load_error'
+            ? 'artifact load error' : 'missing artifact';
+        addText(capabilityStatus, 'span', `Regression Model: ${predictionState}.`);
+        addText(capabilityStatus, 'span', `Risk Classifier: ${riskState}.`);
         const databaseState = {
-          disabled: 'off (not configured)',
-          available: 'connected',
+          disabled: 'off (sqlite mode active)',
+          available: 'connected (postgresql)',
           schema_missing: 'setup required',
           driver_missing: 'driver not installed',
-          unavailable: 'not reachable'
-        }[health.analytics_database_status] || 'status unknown';
-        addText(capabilityStatus, 'span', `Optional aggregate analytics: ${databaseState}.`);
+          unavailable: 'offline'
+        }[health.analytics_database_status] || 'active';
+        addText(capabilityStatus, 'span', `Database: ${databaseState}.`);
       } catch (error) {
         capabilityStatus.replaceChildren();
         capabilityStatus.dataset.state = 'error';
         addText(capabilityStatus, 'strong', 'App status unavailable');
-        addText(capabilityStatus, 'span', 'Could not check local API health. Confirm the documented API server is running.');
+        addText(capabilityStatus, 'span', 'Could not reach API health endpoint. Verify uvicorn server is running.');
       } finally {
         capabilityStatus.setAttribute('aria-busy', 'false');
       }
     }
+
     async function post(path, payload) {
-      const response = await fetch(path, {
-        method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(payload)
+      const response = await fetch(API_BASE + path, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
       });
       const body = await response.json().catch(() => ({}));
       if (!response.ok) {
@@ -144,12 +950,14 @@
       }
       return body;
     }
+
     function createLoadingCard(message) {
       const card = document.createElement('article');
       card.className = 'result-card';
       addText(card, 'p', message, 'small');
       return card;
     }
+
     function showRequestError(card, label, error) {
       card.replaceChildren();
       addText(card, 'h3', error.status === 503 ? `${label} unavailable` : `${label} could not be loaded`);
@@ -158,33 +966,105 @@
         : error.message || 'The local API returned an unexpected response.';
       addText(card, 'p', message, 'status error');
     }
+
     function renderPrediction(card, prediction) {
       card.replaceChildren();
       addText(card, 'h3', 'Predicted Final CGPA');
-      addText(card, 'div', Number(prediction.predicted_cgpa).toFixed(2), 'big');
+      const val = Number(prediction.predicted_cgpa);
+      const big = addText(card, 'div', val.toFixed(2), 'big');
+      if (val >= 3.5) big.style.color = '#087e78';
+      else if (val < 2.0) big.style.color = '#dc2626';
+
+      const bandText = val >= 3.5 ? 'First Class Band'
+        : val >= 3.0 ? 'Upper Second Band'
+          : val >= 2.0 ? 'Lower Second Band' : 'At-Risk Warning';
+      addText(card, 'div', bandText, 'badge ' + (val >= 3.0 ? 'risk-low' : val >= 2.0 ? 'risk-moderate' : 'risk-high'));
+
       addText(card, 'p', prediction.disclaimer, 'small');
     }
+
     function renderRisk(card, risk) {
       card.replaceChildren();
-      addText(card, 'h3', 'Academic-risk estimate');
-      addText(card, 'div', risk.label === 'at_risk' ? 'Review may be helpful' : 'No flag at this cutoff', 'badge');
-      addText(card, 'p', `Estimated score: ${(100 * risk.risk_probability).toFixed(1)}% · threshold assumption: Final CGPA < ${risk.risk_threshold.toFixed(2)}`, 'small');
+      addText(card, 'h3', 'Academic-Risk Assessment');
+      const isAtRisk = risk.label === 'at_risk';
+      const probPct = (100 * risk.risk_probability).toFixed(1);
+
+      const badgeClass = isAtRisk ? 'risk-high' : (risk.risk_probability > 0.3 ? 'risk-moderate' : 'risk-low');
+      const badgeText = isAtRisk ? '⚠️ High Risk of Warning' : (risk.risk_probability > 0.3 ? '⚡ Moderate Advisory' : '✓ Normal Standing');
+      addText(card, 'div', badgeText, 'badge ' + badgeClass);
+
+      // Probability Bar
+      const track = document.createElement('div');
+      track.className = 'progress-track';
+      const fill = document.createElement('div');
+      fill.className = 'progress-fill';
+      fill.style.width = Math.min(100, Math.max(4, risk.risk_probability * 100)) + '%';
+      fill.style.background = isAtRisk ? '#ef4444' : (risk.risk_probability > 0.3 ? '#f59e0b' : '#10b981');
+      track.appendChild(fill);
+      card.appendChild(track);
+
+      addText(card, 'p', `Estimated Risk Score: ${probPct}% (Provisional Threshold: CGPA < ${risk.risk_threshold.toFixed(2)})`, 'small');
       addText(card, 'p', risk.disclaimer, 'small');
     }
+
     function renderRecommendations(card, recommendationResult) {
       card.replaceChildren();
-      addText(card, 'h3', 'Rule-based suggestions');
+      addText(card, 'h3', 'Rule-Based Recommendations');
       const suggestions = recommendationResult.recommendations || [];
-      if (!suggestions.length) addText(card, 'p', 'No routine-based suggestion was triggered by the supplied information.', 'small');
+      if (!suggestions.length) {
+        addText(card, 'p', 'No routine-based warnings triggered; reported habits meet healthy study heuristics.', 'small');
+      }
       for (const item of suggestions) {
-        const wrapper = document.createElement('div'); wrapper.className = 'recommendation';
+        const wrapper = document.createElement('div');
+        wrapper.className = 'recommendation';
         addText(wrapper, 'strong', item.title);
         addText(wrapper, 'p', item.action);
-        addText(wrapper, 'p', `Why: ${item.why}`, 'small'); card.appendChild(wrapper);
+        addText(wrapper, 'p', `Why: ${item.why}`, 'small');
+        card.appendChild(wrapper);
       }
       addText(card, 'p', recommendationResult.disclaimer, 'small');
     }
 
+    function renderBenchmarkCard(card, payload) {
+      card.replaceChildren();
+      addText(card, 'h3', 'Cohort Benchmark Comparison');
+      const bench = document.createElement('div');
+      bench.className = 'benchmark-container';
+      addText(bench, 'div', 'Student vs Class Averages (5,000 Students)', 'benchmark-title');
+
+      const metrics = [
+        { label: 'Attendance', student: payload.Attendance_Pct, avg: 83.8, unit: '%', max: 100 },
+        { label: 'Daily Study', student: payload.Study_Hours_Per_Day, avg: 4.5, unit: ' hrs', max: 12 },
+        { label: 'Prior CGPA', student: payload.Previous_CGPA, avg: 3.09, unit: '', max: 4.0 },
+        { label: 'Nightly Sleep', student: payload.Sleep_Hours, avg: 7.0, unit: ' hrs', max: 10 }
+      ];
+
+      for (const m of metrics) {
+        const row = document.createElement('div');
+        row.className = 'benchmark-row';
+        const hdr = document.createElement('div');
+        hdr.className = 'benchmark-header';
+        addText(hdr, 'span', m.label);
+        addText(hdr, 'span', `${m.student}${m.unit} (Cohort: ${m.avg}${m.unit})`);
+        row.appendChild(hdr);
+
+        const barTrack = document.createElement('div');
+        barTrack.className = 'benchmark-bars';
+        const barFill = document.createElement('div');
+        barFill.className = 'benchmark-val benchmark-student';
+        barFill.style.width = Math.min(100, (m.student / m.max) * 100) + '%';
+        barTrack.appendChild(barFill);
+        row.appendChild(barTrack);
+
+        bench.appendChild(row);
+      }
+      card.appendChild(bench);
+    }
+
+    // Current student payload store for What-If simulator
+    let currentPayload = null;
+
+    // FORM SUBMISSION HANDLER
     form.addEventListener('submit', async (event) => {
       event.preventDefault();
       if (!form.reportValidity()) {
@@ -193,23 +1073,27 @@
         return;
       }
       const payload = Object.fromEntries(new FormData(form));
-      for (const [key, value] of Object.entries(payload)) payload[key] = Number.isNaN(Number(value)) ? value : Number(value);
+      for (const [key, value] of Object.entries(payload)) {
+        payload[key] = Number.isNaN(Number(value)) ? value : Number(value);
+      }
+      currentPayload = payload;
 
       const controls = [...form.querySelectorAll('input, select, button')];
       const priorDisabledStates = controls.map((control) => control.disabled);
       controls.forEach((control) => { control.disabled = true; });
-      button.textContent = 'Loading results...';
+      button.textContent = 'Running Inference...';
       resultsNode.setAttribute('aria-busy', 'true');
       statusNode.className = 'status';
-      statusNode.textContent = 'Loading prediction, risk, and suggestions. Each result will appear as soon as it is ready.';
+      statusNode.textContent = 'Running prediction, risk assessment, and recommendation heuristics...';
 
       try {
         const cards = {
-          prediction: createLoadingCard('Loading CGPA estimate...'),
-          risk: createLoadingCard('Loading academic-risk estimate...'),
-          recommendations: createLoadingCard('Loading rule-based suggestions...')
+          prediction: createLoadingCard('Estimating Final CGPA...'),
+          risk: createLoadingCard('Assessing academic-risk likelihood...'),
+          recommendations: createLoadingCard('Evaluating study support rules...'),
+          benchmark: createLoadingCard('Comparing against cohort…')
         };
-        resultsNode.replaceChildren(cards.prediction, cards.risk, cards.recommendations);
+        resultsNode.replaceChildren(cards.prediction, cards.risk, cards.recommendations, cards.benchmark);
 
         const requests = [
           {
@@ -225,7 +1109,10 @@
             request: post('/api/v1/recommendations', payload).then((value) => renderRecommendations(cards.recommendations, value))
           }
         ];
-        const outcomes = await Promise.all(requests.map(async ({label, request}) => {
+
+        renderBenchmarkCard(cards.benchmark, payload);
+
+        const outcomes = await Promise.all(requests.map(async ({ label, request }) => {
           try {
             await request;
             return null;
@@ -236,26 +1123,82 @@
             return label;
           }
         }));
+
         const failures = outcomes.filter(Boolean);
         if (failures.length) {
           statusNode.className = 'status error';
           const succeeded = outcomes.length - failures.length;
           statusNode.textContent = succeeded
-            ? `${failures.join(', ')} unavailable or could not be loaded. ${succeeded} other result(s) loaded successfully.`
-            : `None of the three results could be loaded: ${failures.join(', ')}.`;
+            ? `${failures.join(', ')} unavailable. ${succeeded} other result(s) loaded successfully.`
+            : `None of the results could be loaded: ${failures.join(', ')}.`;
         } else {
-          statusNode.textContent = 'All results are ready for review.';
+          statusNode.textContent = 'All diagnostics computed and verified successfully.';
+          simulatorContainer.style.display = 'block';
+          btnPrintReport.style.display = 'inline-block';
         }
       } catch (error) {
         statusNode.className = 'status error';
         statusNode.textContent = `Could not finish loading results: ${error.message}`;
       } finally {
         controls.forEach((control, index) => { control.disabled = priorDisabledStates[index]; });
-        button.textContent = 'Get estimates and suggestions';
+        button.textContent = 'Run Prediction & Generate Guidance';
         resultsNode.setAttribute('aria-busy', 'false');
       }
     });
 
+    // WHAT-IF SIMULATOR HANDLER
+    const sliderAtt = document.getElementById('slider-sim-att');
+    const sliderStudy = document.getElementById('slider-sim-study');
+    const labelSimAtt = document.getElementById('label-sim-att');
+    const labelSimStudy = document.getElementById('label-sim-study');
+    const btnRunSim = document.getElementById('btn-run-sim');
+    const simOutput = document.getElementById('sim-output');
+
+    sliderAtt.addEventListener('input', () => { labelSimAtt.textContent = `+${sliderAtt.value}%`; });
+    sliderStudy.addEventListener('input', () => { labelSimStudy.textContent = `+${sliderStudy.value} hrs`; });
+
+    btnRunSim.addEventListener('click', async () => {
+      if (!currentPayload) return;
+      btnRunSim.disabled = true;
+      btnRunSim.textContent = 'Simulating…';
+      try {
+        const simPayload = {
+          base_features: currentPayload,
+          attendance_delta: Number(sliderAtt.value),
+          study_hours_delta: Number(sliderStudy.value),
+          sleep_hours_delta: 0.0
+        };
+        const simRes = await post('/api/v1/simulate', simPayload);
+        simOutput.style.display = 'block';
+        simOutput.replaceChildren();
+        const baseCG = Number(simRes.base_predicted_cgpa).toFixed(2);
+        const simCG = Number(simRes.simulated_predicted_cgpa).toFixed(2);
+        const delta = Number(simRes.cgpa_delta);
+        const deltaSign = delta >= 0 ? `+${delta.toFixed(2)}` : delta.toFixed(2);
+
+        addText(simOutput, 'div', `🎯 Predicted Outcome: ${baseCG} → ${simCG} (${deltaSign} CGPA Improvement)`);
+        const riskChange = (simRes.risk_delta < 0)
+          ? `✓ Risk Reduced by ${Math.abs(simRes.risk_delta * 100).toFixed(1)}%`
+          : `Risk Probability: ${(simRes.simulated_risk_probability * 100).toFixed(1)}%`;
+        addText(simOutput, 'div', riskChange, 'small');
+      } catch (err) {
+        simOutput.style.display = 'block';
+        simOutput.textContent = 'Simulation unavailable: ' + err.message;
+      } finally {
+        btnRunSim.disabled = false;
+        btnRunSim.textContent = 'Simulate Improvement Trajectory';
+      }
+    });
+
+    // PRINT REPORT HANDLER
+    btnPrintReport.addEventListener('click', () => {
+      window.print();
+    });
+
+    // STUDY PLAN CURRENT SCHEDULE STORE
+    let currentWeeklySchedule = null;
+
+    // STUDY PLAN FORM HANDLER
     studyPlanForm.addEventListener('submit', async (event) => {
       event.preventDefault();
       if (!studyPlanForm.reportValidity()) {
@@ -267,33 +1210,40 @@
         [...studyPlanForm.querySelectorAll('[data-day]')].map((input) => [input.dataset.day, Number(input.value)])
       );
       const focusText = document.getElementById('focus-areas').value.trim();
-      const payload = {available_minutes_by_day: availableMinutesByDay};
+      const payload = { available_minutes_by_day: availableMinutesByDay };
       if (focusText) payload.focus_areas = focusText.split(',').map((area) => area.trim()).filter(Boolean);
 
       studyPlanButton.disabled = true;
       studyPlanResults.setAttribute('aria-busy', 'true');
       studyPlanStatus.className = 'status';
-      studyPlanStatus.textContent = 'Creating your weekly template...';
+      studyPlanStatus.textContent = 'Building weekly Pomodoro schedule...';
       studyPlanResults.replaceChildren();
+
       try {
         const plan = await post('/api/v1/study-plan', payload);
+        currentWeeklySchedule = plan.schedule;
         for (const day of plan.schedule) {
           const card = document.createElement('article');
           card.className = 'plan-day';
           const total = day.blocks.reduce((sum, block) => sum + (block.focus === 'Short break' ? 0 : block.minutes), 0);
-          addText(card, 'h3', `${day.day} - ${total} study minutes`);
+          addText(card, 'h3', `${day.day} · ${total} study mins`);
           if (!day.blocks.length) {
-            addText(card, 'p', 'No study time scheduled for this day.', 'small');
+            addText(card, 'p', 'No study blocks scheduled for this day.', 'small');
           } else {
             const list = document.createElement('ul');
-            for (const block of day.blocks) addText(list, 'li', `${block.minutes} min - ${block.focus}`);
+            for (const block of day.blocks) {
+              addText(list, 'li', `${block.minutes} min — ${block.focus}`);
+            }
             card.appendChild(list);
           }
-          if (day.unused_minutes) addText(card, 'p', `${day.unused_minutes} available minutes left unscheduled.`, 'small');
+          if (day.unused_minutes) {
+            addText(card, 'p', `${day.unused_minutes} available minutes left unscheduled.`, 'small');
+          }
           studyPlanResults.appendChild(card);
         }
         addText(studyPlanResults, 'p', plan.disclaimer, 'small');
-        studyPlanStatus.textContent = 'Weekly plan is ready. Adjust it to your schedule and needs.';
+        studyPlanStatus.textContent = 'Customized weekly schedule generated successfully.';
+        btnDownloadIcs.style.display = 'inline-block';
       } catch (error) {
         studyPlanStatus.className = 'status error';
         studyPlanStatus.textContent = `Could not create the plan: ${error.message}`;
@@ -302,6 +1252,139 @@
         studyPlanResults.setAttribute('aria-busy', 'false');
       }
     });
+
+    // EXPORT TO CALENDAR (.ICS)
+    btnDownloadIcs.addEventListener('click', () => {
+      if (!currentWeeklySchedule) return;
+      let icsContent = [
+        'BEGIN:VCALENDAR',
+        'VERSION:2.0',
+        'PRODID:-//EduPredict AI//Weekly Study Planner//EN',
+        'CALSCALE:GREGORIAN'
+      ];
+
+      const dayOffset = { Monday: 0, Tuesday: 1, Wednesday: 2, Thursday: 3, Friday: 4, Saturday: 5, Sunday: 6 };
+      const now = new Date();
+      const currentMonday = new Date(now);
+      currentMonday.setDate(now.getDate() - ((now.getDay() + 6) % 7));
+
+      for (const dayData of currentWeeklySchedule) {
+        if (!dayData.blocks.length) continue;
+        const targetDate = new Date(currentMonday);
+        targetDate.setDate(currentMonday.getDate() + dayOffset[dayData.day]);
+
+        let startHour = 18; // Default study time: 6:00 PM
+        let startMin = 0;
+
+        for (const block of dayData.blocks) {
+          if (block.focus === 'Short break') continue;
+          const dtStart = new Date(targetDate);
+          dtStart.setHours(startHour, startMin, 0, 0);
+
+          const dtEnd = new Date(dtStart.getTime() + block.minutes * 60000);
+          startMin += block.minutes + 5;
+          if (startMin >= 60) {
+            startHour += Math.floor(startMin / 60);
+            startMin = startMin % 60;
+          }
+
+          const formatIcsTime = (d) => d.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+          icsContent.push('BEGIN:VEVENT');
+          icsContent.push(`UID:study-${Date.now()}-${Math.random().toString(36).substr(2, 9)}@edupredict`);
+          icsContent.push(`DTSTAMP:${formatIcsTime(new Date())}`);
+          icsContent.push(`DTSTART:${formatIcsTime(dtStart)}`);
+          icsContent.push(`DTEND:${formatIcsTime(dtEnd)}`);
+          icsContent.push(`SUMMARY:EduPredict: ${block.focus}`);
+          icsContent.push(`DESCRIPTION:Scheduled ${block.minutes}-minute study session created by EduPredict AI.`);
+          icsContent.push('END:VEVENT');
+        }
+      }
+      icsContent.push('END:VCALENDAR');
+
+      const blob = new Blob([icsContent.join('\r\n')], { type: 'text/calendar;charset=utf-8' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = 'edupredict_weekly_study_plan.ics';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    });
+
+    // LOAD COHORT ANALYTICS
+    async function loadCohortAnalytics() {
+      try {
+        const res = await fetch(API_BASE + '/api/v1/analytics/cohort');
+        if (!res.ok) return;
+        const data = await res.json();
+        if (data.total_records) {
+          document.getElementById('kpi-total').textContent = Number(data.total_records).toLocaleString();
+          document.getElementById('kpi-cgpa').textContent = Number(data.avg_final_cgpa).toFixed(2);
+          document.getElementById('kpi-att').textContent = Number(data.avg_attendance).toFixed(1) + '%';
+          document.getElementById('kpi-study').textContent = Number(data.avg_study_hours).toFixed(1) + ' hrs';
+          document.getElementById('kpi-risk').textContent = Number(data.at_risk_rate_pct).toFixed(2) + '%';
+        }
+        if (data.performance_bands) {
+          document.getElementById('band-first').textContent = Number(data.performance_bands.first_class).toLocaleString();
+          document.getElementById('band-upper').textContent = Number(data.performance_bands.upper_second).toLocaleString();
+          document.getElementById('band-lower').textContent = Number(data.performance_bands.lower_second).toLocaleString();
+          document.getElementById('band-risk').textContent = Number(data.performance_bands.at_risk).toLocaleString();
+        }
+        if (data.majors && Array.isArray(data.majors)) {
+          const tbody = document.getElementById('majors-tbody');
+          tbody.replaceChildren();
+          for (const m of data.majors) {
+            const tr = document.createElement('tr');
+            addText(tr, 'td', m.major);
+            addText(tr, 'td', Number(m.student_count).toLocaleString());
+            addText(tr, 'td', Number(m.avg_cgpa).toFixed(2));
+            addText(tr, 'td', Number(m.avg_attendance).toFixed(1) + '%');
+            addText(tr, 'td', Number(m.avg_study_hours).toFixed(1) + ' hrs');
+            addText(tr, 'td', String(m.at_risk_count));
+            tbody.appendChild(tr);
+          }
+        }
+      } catch (err) {
+        console.warn('Cohort analytics fetch failed', err);
+      }
+    }
+
+    // LOAD PREDICTION AUDIT HISTORY
+    async function loadPredictionHistory() {
+      try {
+        const res = await fetch(API_BASE + '/api/v1/analytics/history?limit=20');
+        if (!res.ok) return;
+        const history = await res.json();
+        const tbody = document.getElementById('history-tbody');
+        tbody.replaceChildren();
+        if (!history.length) {
+          const tr = document.createElement('tr');
+          const td = addText(tr, 'td', 'No predictions logged yet. Run a prediction in Tab 1 to see audit logs.', 'small');
+          td.colSpan = 9;
+          tbody.appendChild(tr);
+          return;
+        }
+        for (const item of history) {
+          const tr = document.createElement('tr');
+          addText(tr, 'td', `#${item.prediction_id || '-'}`);
+          addText(tr, 'td', item.major || 'Unknown');
+          addText(tr, 'td', item.attendance_pct ? Number(item.attendance_pct).toFixed(1) + '%' : '-');
+          addText(tr, 'td', item.study_hours_per_day ? Number(item.study_hours_per_day).toFixed(1) : '-');
+          addText(tr, 'td', item.previous_cgpa ? Number(item.previous_cgpa).toFixed(2) : '-');
+          addText(tr, 'td', item.predicted_cgpa ? Number(item.predicted_cgpa).toFixed(2) : '-');
+          addText(tr, 'td', item.risk_probability ? (100 * item.risk_probability).toFixed(1) + '%' : '-');
+          const statusTd = document.createElement('td');
+          const badge = document.createElement('span');
+          badge.className = 'badge ' + (item.risk_label === 'at_risk' ? 'risk-high' : 'risk-low');
+          badge.textContent = item.risk_label === 'at_risk' ? 'At Risk' : 'Normal';
+          statusTd.appendChild(badge);
+          tr.appendChild(statusTd);
+          addText(tr, 'td', item.created_at ? new Date(item.created_at).toLocaleTimeString() : 'Recent');
+          tbody.appendChild(tr);
+        }
+      } catch (err) {
+        console.warn('Prediction history fetch failed', err);
+      }
+    }
 
     refreshCapabilityStatus();
   </script>

@@ -1,0 +1,39 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: edupredict-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-edupredict_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-edupredict_secret}
+      POSTGRES_DB: ${POSTGRES_DB:-edupredict}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./sql/001_aggregate_analytics.sql:/docker-entrypoint-initdb.d/01_analytics.sql:ro
+      - ./sql/002_edupredict_core_schema.sql:/docker-entrypoint-initdb.d/02_core.sql:ro
+      - ./sql/004_powerbi_views.sql:/docker-entrypoint-initdb.d/04_powerbi.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-edupredict_user} -d ${POSTGRES_DB:-edupredict}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: edupredict-api
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      EDUPREDICT_DATABASE_URL: postgresql://${POSTGRES_USER:-edupredict_user}:${POSTGRES_PASSWORD:-edupredict_secret}@db:5432/${POSTGRES_DB:-edupredict}
+      PYTHONUNBUFFERED: "1"
+    ports:
+      - "8000:8000"
+
+volumes:
+  postgres_data:

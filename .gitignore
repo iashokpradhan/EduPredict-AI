@@ -10,6 +10,8 @@ __pycache__/
 # Local data and temporary artifacts
 data/raw/*
 data/processed/*
+data/powerbi/*
+data/*.db
 *.tmp
 *.log
 ~$*
