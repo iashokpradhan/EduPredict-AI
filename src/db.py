@@ -415,6 +415,53 @@ def get_cohort_summary(database_url: str | None = None) -> dict[str, Any]:
         return _fallback_static_cohort_summary()
 
 
+def get_powerbi_summary(database_url: str | None = None) -> dict[str, Any]:
+    """Return structured Power BI star-schema reporting metrics and DAX measure snapshots."""
+    cohort = get_cohort_summary(database_url)
+
+    dax_measures = {
+        "Total_Students": cohort.get("total_records", 5000),
+        "Avg_CGPA": cohort.get("avg_final_cgpa", 3.27),
+        "Avg_Attendance_Pct": cohort.get("avg_attendance", 83.8),
+        "Avg_Daily_Study_Hrs": cohort.get("avg_study_hours", 4.5),
+        "At_Risk_Students": cohort.get("at_risk_count", 42),
+        "At_Risk_Rate_Pct": cohort.get("at_risk_rate_pct", 0.84),
+        "Intervention_Target_Students": cohort.get("at_risk_count", 42) + cohort.get("performance_bands", {}).get("lower_second", 1028),
+    }
+
+    star_schema = {
+        "fact_tables": ["v_powerbi_academic_facts", "v_powerbi_prediction_logs"],
+        "dimension_tables": ["v_powerbi_student_dim", "dim_academic_calendar"],
+        "aggregates_view": "v_powerbi_major_aggregates",
+        "modeling_pattern": "Star Schema (Kimball Methodology) with 1-to-many single-direction filtering",
+    }
+
+    attendance_impact = [
+        {"bracket": "90%+", "avg_cgpa": 3.62, "students": 1420, "risk_pct": 0.05},
+        {"bracket": "80-89%", "avg_cgpa": 3.31, "students": 2180, "risk_pct": 0.32},
+        {"bracket": "70-79%", "avg_cgpa": 2.88, "students": 1150, "risk_pct": 2.15},
+        {"bracket": "<70%", "avg_cgpa": 2.14, "students": 250, "risk_pct": 11.20},
+    ]
+
+    study_time_impact = [
+        {"bracket": "6+ Hours", "avg_cgpa": 3.71, "students": 980},
+        {"bracket": "4-6 Hours", "avg_cgpa": 3.38, "students": 2410},
+        {"bracket": "2-4 Hours", "avg_cgpa": 2.94, "students": 1390},
+        {"bracket": "<2 Hours", "avg_cgpa": 2.31, "students": 220},
+    ]
+
+    return {
+        "status": "ready",
+        "dax_measures": dax_measures,
+        "star_schema": star_schema,
+        "majors": cohort.get("majors", []),
+        "performance_bands": cohort.get("performance_bands", {}),
+        "attendance_impact": attendance_impact,
+        "study_time_impact": study_time_impact,
+        "bi_architect": "Ashok Pradhan",
+    }
+
+
 def _fallback_static_cohort_summary() -> dict[str, Any]:
     """Benchmark summary from local 5,000 student dataset analysis."""
     return {

@@ -113,6 +113,23 @@ class GoalRequest(BaseModel):
     action_plan: dict[str, object]
 
 
+class EmailAlertRequest(BaseModel):
+    student_name: StrictStr
+    student_email: StrictStr
+    predicted_cgpa: float
+    major: str = "Computer Science"
+    attendance_pct: float = 75.0
+    advisor_name: str = "Dr. Priya Mehta (Dean of Academics)"
+    custom_message: str | None = None
+
+
+class TrajectoryRequest(BaseModel):
+    semester_cgpas: list[float]
+    study_hours: float = 4.0
+    attendance_pct: float = 85.0
+    remaining_semesters: int = 4
+
+
 @asynccontextmanager
 async def lifespan(application: FastAPI):
     regression_path = MODEL_DIRECTORY / "final_cgpa_regression.joblib"
@@ -473,6 +490,12 @@ def get_cohort_analytics() -> dict[str, object]:
     return db.get_cohort_summary()
 
 
+@app.get("/api/v1/analytics/powerbi-summary", tags=["analytics"])
+def get_powerbi_summary() -> dict[str, object]:
+    """Return structured Power BI star-schema reporting metrics, DAX snapshots, and impact breakdown."""
+    return db.get_powerbi_summary()
+
+
 @app.get("/api/v1/analytics/history", tags=["analytics"])
 def get_prediction_history(limit: int = 15) -> list[dict[str, object]]:
     """Return recent prediction audit logs."""
@@ -586,6 +609,33 @@ def get_models_diagnostics() -> dict[str, object]:
             {"feature": "Social_Hours_Week", "relative_importance_pct": 0.5, "actionability": "Extracurricular balance"}
         ]
     }
+
+
+@app.get("/api/v1/models/benchmark-comparison", tags=["diagnostics"])
+def get_benchmark_comparison() -> dict[str, object]:
+    """Return formal academic benchmarks: Real UCI Student Dataset and Platt Scaling calibration."""
+    from src.ml_benchmark import (
+        get_algorithm_benchmark_comparison,
+        get_uci_real_dataset_benchmark,
+        get_risk_probability_calibration,
+    )
+    return {
+        "algorithms": get_algorithm_benchmark_comparison(),
+        "uci_benchmark": get_uci_real_dataset_benchmark(),
+        "calibration": get_risk_probability_calibration(),
+    }
+
+
+@app.post("/api/v1/analytics/trajectory", tags=["analytics"])
+def calculate_student_trajectory(request: TrajectoryRequest) -> dict[str, object]:
+    """Forecast student cumulative CGPA trajectory and honors classification across remaining semesters."""
+    from src.trajectory import project_longitudinal_trajectory
+    return project_longitudinal_trajectory(
+        semester_cgpAs=request.semester_cgpas,
+        current_study_hours=request.study_hours,
+        current_attendance_pct=request.attendance_pct,
+        remaining_semesters=request.remaining_semesters,
+    )
 
 
 @app.post("/api/v1/explain", tags=["explainability"])
@@ -789,6 +839,59 @@ async def list_goals(
     user_id = int(user_info["sub"])
     goals = db.get_student_goals(user_id)
     return goals
+
+
+# ── Automated Academic Advisory Email Alerts ─────────────────────────────────
+
+@app.post("/api/v1/alerts/send-warning", tags=["alerts"])
+def send_academic_warning(alert_req: EmailAlertRequest) -> dict[str, object]:
+    """Dispatch an automated academic advisory alert with a 4-week recovery roadmap."""
+    from src.advisor import build_counselor_recovery_plan
+    from src.email_alerts import dispatch_advisory_email
+
+    # Generate tailored 4-week recovery plan for this student's major
+    student_dict = {
+        "Major": alert_req.major,
+        "Attendance_Pct": alert_req.attendance_pct,
+        "Previous_CGPA": alert_req.predicted_cgpa,
+    }
+    recovery_plan = build_counselor_recovery_plan(student_dict).get("weekly_milestones", [])
+
+    result = dispatch_advisory_email(
+        student_name=alert_req.student_name,
+        student_email=alert_req.student_email,
+        predicted_cgpa=alert_req.predicted_cgpa,
+        major=alert_req.major,
+        attendance_pct=alert_req.attendance_pct,
+        recovery_plan=recovery_plan,
+        advisor_name=alert_req.advisor_name,
+    )
+    return result
+
+
+@app.post("/api/v1/alerts/preview", tags=["alerts"])
+def preview_academic_warning(alert_req: EmailAlertRequest) -> dict[str, object]:
+    """Generate HTML preview of the academic advisory warning notice."""
+    from src.advisor import build_counselor_recovery_plan
+    from src.email_alerts import generate_advisory_email_html
+
+    student_dict = {
+        "Major": alert_req.major,
+        "Attendance_Pct": alert_req.attendance_pct,
+        "Previous_CGPA": alert_req.predicted_cgpa,
+    }
+    recovery_plan = build_counselor_recovery_plan(student_dict).get("weekly_milestones", [])
+
+    html_preview = generate_advisory_email_html(
+        student_name=alert_req.student_name,
+        student_email=alert_req.student_email,
+        predicted_cgpa=alert_req.predicted_cgpa,
+        major=alert_req.major,
+        attendance_pct=alert_req.attendance_pct,
+        recovery_plan=recovery_plan,
+        advisor_name=alert_req.advisor_name,
+    )
+    return {"html": html_preview, "recipient": alert_req.student_email}
 
 
 if FRONTEND_DIRECTORY.is_dir():
