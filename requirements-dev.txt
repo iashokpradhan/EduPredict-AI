@@ -1,0 +1,9 @@
+# EduPredict AI — dev-only extras (notebooks, plotting, testing)
+# Install alongside requirements.txt for local development:
+#   pip install -r requirements.txt -r requirements-dev.txt
+
+-r requirements.txt
+
+matplotlib==3.11.1
+seaborn==0.13.2
+jupyter==1.1.1

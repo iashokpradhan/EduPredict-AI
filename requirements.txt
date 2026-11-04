@@ -1,13 +1,32 @@
-# Verified on Windows with Python 3.14.6. Exact pins reproduce this workspace setup.
+# ─────────────────────────────────────────────────────────
+# EduPredict AI — Python dependencies
+#
+# Split into two sections:
+#   [core]  required to run the FastAPI server in production
+#   [dev]   only needed for notebooks, plotting, and testing
+#
+# Railway / Docker builds install everything here.
+# To install dev-only extras locally: pip install -r requirements-dev.txt
+# ─────────────────────────────────────────────────────────
+
+# [core] ── data & ML ──────────────────────────────────────
 numpy==2.5.3
 pandas==3.0.5
 scipy==1.18.1
 scikit-learn==1.9.1
-matplotlib==3.11.1
-seaborn==0.13.2
-jupyter==1.1.1
 joblib==1.6.0
+
+# [core] ── API server ────────────────────────────────────
 fastapi==0.143.0
-uvicorn==0.54.0
+uvicorn[standard]==0.54.0
 httpx==0.28.1
+
+# [core] ── optional PostgreSQL analytics (safe to omit) ──
+# psycopg[binary] is optional: app auto-falls back to SQLite
+# when the EDUPREDICT_DATABASE_URL env var is not set.
 psycopg[binary]==3.3.6
+
+# [dev] ── notebooks & visualisation (not needed in prod) ─
+# matplotlib==3.11.1
+# seaborn==0.13.2
+# jupyter==1.1.1
