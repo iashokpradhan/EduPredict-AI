@@ -1,6 +1,6 @@
 # EduPredict AI — IILM University Student Performance Prediction System
 
-> **Institution:** IILM University, Gurugram · Department of Computer Science & Data Analytics  
+> **Institution:** IILM University  
 > **Domain:** `@iilm.edu` — Institutional access only
 
 [![Python 3.12 / 3.14](https://img.shields.io/badge/python-3.12%20%7C%203.14-blue.svg)](https://www.python.org/)
@@ -10,7 +10,7 @@
 [![Power BI Ready](https://img.shields.io/badge/Power%20BI-Star%20Schema-F2C811.svg)](https://powerbi.microsoft.com/)
 [![Tests Passing](https://img.shields.io/badge/tests-54%20passed-brightgreen.svg)](tests/)
 
-EduPredict AI is an end-to-end, production-grade Data Science Capstone Project built for **IILM University, Gurugram**. It forecasts student academic performance (Final CGPA), identifies students at risk of academic probation ($\text{Final\_CGPA} < 2.0$), provides transparent rules-based study guidance, Explainable AI waterfall attribution, faculty batch screening, 4-week academic counseling roadmaps, and delivers institutional intelligence through SQL analytics and Power BI dashboards.
+EduPredict AI is an end-to-end, production-grade Data Science Capstone Project built for **IILM University**. It forecasts student academic performance (Final CGPA), identifies students at risk of academic probation ($\text{Final\_CGPA} < 2.0$), provides transparent rules-based study guidance, Explainable AI waterfall attribution, faculty batch screening, 4-week academic counseling roadmaps, and delivers institutional intelligence through SQL analytics and Power BI dashboards.
 
 **Registration and login are restricted to @iilm.edu institutional email addresses.**
 
