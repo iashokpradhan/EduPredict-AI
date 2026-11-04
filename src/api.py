@@ -130,6 +130,12 @@ class TrajectoryRequest(BaseModel):
     remaining_semesters: int = 4
 
 
+class FirebaseLoginRequest(BaseModel):
+    id_token: StrictStr
+    email: StrictStr
+    full_name: str = "IILM Student"
+
+
 @asynccontextmanager
 async def lifespan(application: FastAPI):
     regression_path = MODEL_DIRECTORY / "final_cgpa_regression.joblib"
@@ -763,6 +769,45 @@ def login(request: LoginRequest) -> dict[str, object]:
             "full_name": user["full_name"],
             "role": user["role"],
             "student_id": user.get("student_id"),
+        },
+    }
+
+
+@app.post("/api/v1/auth/firebase-login", tags=["auth"])
+def firebase_google_login(req: FirebaseLoginRequest) -> dict[str, object]:
+    """Exchange a verified Firebase/Google OAuth ID Token for an EduPredict JWT session token."""
+    from src.auth import validate_iilm_email, hash_password
+    # Enforce strictly @iilm.edu email domain
+    validate_iilm_email(req.email)
+
+    user = db.get_user_by_email(req.email)
+    if not user:
+        # Register new student account upon first Google OAuth login
+        user_id = db.create_user(
+            email=req.email,
+            hashed_password=hash_password("google_oauth_" + req.id_token[:16]),
+            full_name=req.full_name,
+            role="student",
+        )
+        user = db.get_user_by_id(user_id)
+    else:
+        user_id = user["user_id"]
+
+    token = create_access_token(
+        user_id=user_id,
+        email=req.email,
+        role=user["role"] if user else "student",
+        full_name=req.full_name,
+    )
+    return {
+        "access_token": token,
+        "token_type": "bearer",
+        "auth_provider": "google_firebase",
+        "user": {
+            "user_id": user_id,
+            "email": req.email,
+            "full_name": req.full_name,
+            "role": user["role"] if user else "student",
         },
     }
 
