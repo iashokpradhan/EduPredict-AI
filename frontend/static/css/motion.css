@@ -1,0 +1,341 @@
+/* ==========================================================================
+   EduPredict AI — Tactile Motion & Live Interaction Layer
+   Gen Z / Y2K-meets-Modern Aesthetic
+   ========================================================================== */
+
+/* --- Custom Cursor (Desktop Only) --- */
+@media (hover: hover) and (pointer: fine) {
+  body.has-custom-cursor {
+    cursor: none;
+  }
+  .cursor-dot {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 8px;
+    height: 8px;
+    background: #ff5cae;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 99999;
+    transform: translate(-50%, -50%);
+    transition: opacity 0.2s ease, transform 0.05s ease;
+    box-shadow: 0 0 12px #ff5cae;
+  }
+  .cursor-ring {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 32px;
+    height: 32px;
+    border: 1.5px solid rgba(167, 139, 250, 0.65);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 99998;
+    transform: translate(-50%, -50%);
+    transition: width 0.25s cubic-bezier(0.34, 1.56, 0.64, 1),
+                height 0.25s cubic-bezier(0.34, 1.56, 0.64, 1),
+                border-color 0.2s ease,
+                background 0.2s ease;
+    backdrop-filter: blur(1px);
+  }
+  .cursor-ring.active {
+    width: 48px;
+    height: 48px;
+    border-color: #5eead4;
+    background: rgba(94, 234, 212, 0.15);
+  }
+}
+
+/* --- Aurora Mesh Background Blobs --- */
+.aurora-bg {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;
+  overflow: hidden;
+}
+.aurora-blob {
+  position: absolute;
+  filter: blur(90px);
+  opacity: 0.35;
+  border-radius: 50%;
+  mix-blend-mode: screen;
+  animation: floatBlobs 22s ease-in-out infinite alternate;
+}
+[data-theme="light"] .aurora-blob {
+  opacity: 0.25;
+  mix-blend-mode: multiply;
+}
+.blob-1 {
+  width: 450px;
+  height: 450px;
+  background: radial-gradient(circle, #a78bfa 0%, transparent 70%);
+  top: -80px;
+  left: -80px;
+  animation-duration: 18s;
+}
+.blob-2 {
+  width: 550px;
+  height: 550px;
+  background: radial-gradient(circle, #ff5cae 0%, transparent 70%);
+  bottom: -100px;
+  right: -80px;
+  animation-duration: 25s;
+  animation-delay: -5s;
+}
+.blob-3 {
+  width: 380px;
+  height: 380px;
+  background: radial-gradient(circle, #5eead4 0%, transparent 70%);
+  top: 45%;
+  left: 55%;
+  animation-duration: 20s;
+  animation-delay: -10s;
+}
+
+@keyframes floatBlobs {
+  0% { transform: translate(0, 0) scale(1) rotate(0deg); }
+  50% { transform: translate(60px, 40px) scale(1.12) rotate(45deg); }
+  100% { transform: translate(-40px, 70px) scale(0.92) rotate(-30deg); }
+}
+
+/* --- Tactile Button Tap Ripple --- */
+.ripple-host {
+  position: relative;
+  overflow: hidden;
+}
+.ripple-effect {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,255,255,0.45) 0%, rgba(255,255,255,0) 70%);
+  transform: scale(0);
+  animation: rippleSpread 0.55s ease-out forwards;
+  pointer-events: none;
+}
+@keyframes rippleSpread {
+  to {
+    transform: scale(4);
+    opacity: 0;
+  }
+}
+
+/* --- Springy Tactile Press --- */
+button, .tab-btn, .preset-btn, .kpi-tile, .result-card {
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1),
+              box-shadow 0.2s ease,
+              border-color 0.2s ease;
+}
+button:active, .tab-btn:active, .preset-btn:active {
+  transform: scale(0.96) !important;
+}
+
+/* --- 3D Tilt Card Container & Glare --- */
+.tilt-card {
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.15s ease-out, box-shadow 0.2s ease;
+  will-change: transform;
+}
+.card-glare {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: radial-gradient(circle at 50% 50%, rgba(255,255,255,0.18) 0%, transparent 70%);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+/* --- Sticker Hover Wiggle --- */
+.sticker-emoji {
+  display: inline-block;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transform-origin: center bottom;
+}
+.sticker-emoji:hover {
+  transform: rotate(-12deg) scale(1.22);
+}
+.sticker-emoji:active {
+  transform: rotate(15deg) scale(0.9);
+}
+
+/* --- Live Pulsing Status Dot --- */
+.status-pulse-dot {
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  margin-right: 8px;
+  vertical-align: middle;
+  position: relative;
+}
+.status-pulse-dot.online {
+  background: #5eead4;
+  box-shadow: 0 0 10px #5eead4;
+}
+.status-pulse-dot.online::after {
+  content: "";
+  position: absolute;
+  inset: -3px;
+  border-radius: 50%;
+  border: 1.5px solid #5eead4;
+  animation: pulsePing 1.8s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+.status-pulse-dot.waking {
+  background: #ffb38a;
+  box-shadow: 0 0 10px #ffb38a;
+}
+.status-pulse-dot.waking::after {
+  content: "";
+  position: absolute;
+  inset: -3px;
+  border-radius: 50%;
+  border: 1.5px solid #ffb38a;
+  animation: pulsePing 1.2s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+.status-pulse-dot.error {
+  background: #ff5cae;
+  box-shadow: 0 0 10px #ff5cae;
+}
+
+@keyframes pulsePing {
+  0% { transform: scale(0.9); opacity: 1; }
+  75%, 100% { transform: scale(2.2); opacity: 0; }
+}
+
+/* --- Shimmer Loader for Waking Up State --- */
+.shimmer-text {
+  background: linear-gradient(90deg, rgba(167,139,250,0.6) 0%, rgba(255,92,174,0.9) 50%, rgba(94,234,212,0.6) 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shimmerMove 2s linear infinite;
+}
+@keyframes shimmerMove {
+  to { background-position: 200% center; }
+}
+
+/* --- Toast Notifications --- */
+#toast-container {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 10000;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  pointer-events: none;
+}
+.toast {
+  pointer-events: auto;
+  background: rgba(21, 18, 43, 0.88);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(167, 139, 250, 0.3);
+  color: #fbf7ff;
+  padding: 12px 20px;
+  border-radius: 9999px;
+  font-size: 0.88rem;
+  font-weight: 500;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35), 0 0 20px rgba(167, 139, 250, 0.2);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transform: translateY(20px) scale(0.92);
+  opacity: 0;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.toast.show {
+  transform: translateY(0) scale(1);
+  opacity: 1;
+}
+.toast.success { border-color: #5eead4; color: #5eead4; }
+.toast.error { border-color: #ff5cae; color: #ff5cae; }
+
+/* --- Supportive Shake for Risk Warning --- */
+@keyframes supportiveShake {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-6px); }
+  40%, 80% { transform: translateX(6px); }
+}
+.shake-supportive {
+  animation: supportiveShake 0.45s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+
+/* --- Party Mode Easter Egg --- */
+body.party-mode {
+  animation: partyRainbow 8s linear infinite;
+}
+@keyframes partyRainbow {
+  0% { filter: hue-rotate(0deg); }
+  100% { filter: hue-rotate(360deg); }
+}
+
+/* --- Floating Value Bubble for Sliders --- */
+.slider-wrapper {
+  position: relative;
+  padding-top: 24px;
+}
+.floating-bubble {
+  position: absolute;
+  top: -2px;
+  transform: translateX(-50%);
+  background: #a78bfa;
+  color: #0d0b1a;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 999px;
+  pointer-events: none;
+  box-shadow: 0 2px 8px rgba(167,139,250,0.5);
+  transition: transform 0.08s ease-out;
+}
+
+/* --- Mobile Bottom Sticky Bar --- */
+@media (max-width: 768px) {
+  .nav-tabs {
+    position: fixed !important;
+    bottom: 12px !important;
+    top: auto !important;
+    left: 12px !important;
+    right: 12px !important;
+    max-width: calc(100vw - 24px) !important;
+    z-index: 9999;
+    background: rgba(21, 18, 43, 0.92) !important;
+    backdrop-filter: blur(20px) !important;
+    border: 1px solid rgba(167, 139, 250, 0.28) !important;
+    border-radius: 9999px !important;
+    padding: 6px !important;
+    box-shadow: 0 10px 35px rgba(0,0,0,0.45) !important;
+  }
+  .tab-btn {
+    font-size: 0.75rem !important;
+    padding: 8px 10px !important;
+    min-height: 44px !important;
+  }
+  body {
+    padding-bottom: 90px !important;
+  }
+}
+
+/* --- Reduced Motion Preferences --- */
+@media (prefers-reduced-motion: reduce), (update: slow) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+  .aurora-blob { display: none !important; }
+  .cursor-dot, .cursor-ring { display: none !important; }
+}
+
+/* User reduced effects toggle class */
+body.reduced-effects * {
+  animation: none !important;
+  transition: none !important;
+}
+body.reduced-effects .aurora-blob,
+body.reduced-effects .cursor-dot,
+body.reduced-effects .cursor-ring {
+  display: none !important;
+}

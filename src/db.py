@@ -109,6 +109,11 @@ def initialize_core_database(database_url: str | None = None) -> None:
             # SQLite execution (convert PostgreSQL specifics if any, or run clean SQLite DDL)
             _init_sqlite_schema(conn)
 
+    try:
+        seed_default_demo_users(target_url)
+    except Exception as exc:
+        LOGGER.warning("Could not seed default demo users: %s", exc)
+
     LOGGER.info("EduPredict AI database initialized successfully (%s).", engine_type)
 
 
@@ -173,6 +178,24 @@ def _init_sqlite_schema(conn: sqlite3.Connection) -> None:
         recommendation_rule_id TEXT,
         prediction_available INTEGER NOT NULL,
         risk_available INTEGER NOT NULL
+    );
+
+    CREATE TABLE IF NOT EXISTS users (
+        user_id INTEGER PRIMARY KEY AUTOINCREMENT,
+        email TEXT UNIQUE NOT NULL,
+        hashed_password TEXT NOT NULL,
+        full_name TEXT NOT NULL,
+        role TEXT NOT NULL CHECK(role IN ('student', 'advisor', 'admin')),
+        student_id TEXT REFERENCES students(student_id) ON DELETE SET NULL,
+        created_at TEXT NOT NULL DEFAULT (datetime('now', 'utc'))
+    );
+
+    CREATE TABLE IF NOT EXISTS saved_goals (
+        goal_id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER NOT NULL REFERENCES users(user_id) ON DELETE CASCADE,
+        target_cgpa REAL NOT NULL,
+        action_plan_json TEXT NOT NULL,
+        created_at TEXT NOT NULL DEFAULT (datetime('now', 'utc'))
     );
     """)
 
@@ -420,3 +443,154 @@ def _fallback_static_cohort_summary() -> dict[str, Any]:
             "at_risk": 42,
         },
     }
+
+
+def create_user(
+    email: str,
+    hashed_password: str,
+    full_name: str,
+    role: str = "student",
+    student_id: str | None = None,
+    database_url: str | None = None,
+) -> int:
+    """Create a new user account and return the generated user_id."""
+    with get_connection(database_url) as conn:
+        cursor = conn.cursor()
+        cursor.execute(
+            """
+            INSERT INTO users (email, hashed_password, full_name, role, student_id)
+            VALUES (?, ?, ?, ?, ?)
+            """,
+            (email.strip().lower(), hashed_password, full_name.strip(), role, student_id),
+        )
+        conn.commit()
+        return cursor.lastrowid
+
+
+def get_user_by_email(email: str, database_url: str | None = None) -> dict[str, Any] | None:
+    """Fetch user record by unique email address."""
+    with get_connection(database_url) as conn:
+        cursor = conn.cursor()
+        cursor.execute(
+            """
+            SELECT user_id, email, hashed_password, full_name, role, student_id, created_at
+            FROM users WHERE email = ?
+            """,
+            (email.strip().lower(),),
+        )
+        row = cursor.fetchone()
+        if not row:
+            return None
+        return {
+            "user_id": row["user_id"],
+            "email": row["email"],
+            "hashed_password": row["hashed_password"],
+            "full_name": row["full_name"],
+            "role": row["role"],
+            "student_id": row["student_id"],
+            "created_at": row["created_at"],
+        }
+
+
+def get_user_by_id(user_id: int, database_url: str | None = None) -> dict[str, Any] | None:
+    """Fetch user record by unique user_id."""
+    with get_connection(database_url) as conn:
+        cursor = conn.cursor()
+        cursor.execute(
+            """
+            SELECT user_id, email, full_name, role, student_id, created_at
+            FROM users WHERE user_id = ?
+            """,
+            (user_id,),
+        )
+        row = cursor.fetchone()
+        if not row:
+            return None
+        return {
+            "user_id": row["user_id"],
+            "email": row["email"],
+            "full_name": row["full_name"],
+            "role": row["role"],
+            "student_id": row["student_id"],
+            "created_at": row["created_at"],
+        }
+
+
+def save_student_goal(
+    user_id: int,
+    target_cgpa: float,
+    action_plan_json: str,
+    database_url: str | None = None,
+) -> int:
+    """Save an actionable student goal / simulation."""
+    with get_connection(database_url) as conn:
+        cursor = conn.cursor()
+        cursor.execute(
+            """
+            INSERT INTO saved_goals (user_id, target_cgpa, action_plan_json)
+            VALUES (?, ?, ?)
+            """,
+            (user_id, target_cgpa, action_plan_json),
+        )
+        conn.commit()
+        return cursor.lastrowid
+
+
+def get_student_goals(user_id: int, database_url: str | None = None) -> list[dict[str, Any]]:
+    """Retrieve all saved goals for a user."""
+    with get_connection(database_url) as conn:
+        cursor = conn.cursor()
+        cursor.execute(
+            """
+            SELECT goal_id, user_id, target_cgpa, action_plan_json, created_at
+            FROM saved_goals WHERE user_id = ? ORDER BY goal_id DESC
+            """,
+            (user_id,),
+        )
+        rows = cursor.fetchall()
+        return [
+            {
+                "goal_id": r["goal_id"],
+                "target_cgpa": r["target_cgpa"],
+                "action_plan_json": r["action_plan_json"],
+                "created_at": r["created_at"],
+            }
+            for r in rows
+        ]
+
+
+def seed_default_demo_users(database_url: str | None = None) -> None:
+    """Seed student and advisor demo accounts if they do not exist."""
+    from src.auth import hash_password
+
+    # Check if student S00001 exists in students table
+    has_student = False
+    try:
+        with get_connection(database_url) as conn:
+            cursor = conn.cursor()
+            cursor.execute("SELECT 1 FROM students WHERE student_id = 'S00001'")
+            has_student = bool(cursor.fetchone())
+    except Exception:
+        has_student = False
+
+    # 1. Student Demo: Alex Turner (CS)
+    if not get_user_by_email("student@edupredict.ai", database_url):
+        create_user(
+            email="student@edupredict.ai",
+            hashed_password=hash_password("student123"),
+            full_name="Alex Turner",
+            role="student",
+            student_id="S00001" if has_student else None,
+            database_url=database_url,
+        )
+
+    # 2. Advisor Demo: Dr. Sharma (Academic Dean)
+    if not get_user_by_email("advisor@edupredict.ai", database_url):
+        create_user(
+            email="advisor@edupredict.ai",
+            hashed_password=hash_password("advisor123"),
+            full_name="Dr. Sharma",
+            role="advisor",
+            student_id=None,
+            database_url=database_url,
+        )

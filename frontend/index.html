@@ -1,419 +1,804 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#0f2b48">
+  <meta name="theme-color" content="#0d0b1a">
   <link rel="icon" href="data:,">
   <title>EduPredict AI | Student Performance Prediction & Support System</title>
+
+  <!-- Google Fonts: Space Grotesk (Headings), Inter (Body), JetBrains Mono (Numbers/Code) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@500;600;700;800;900&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Canvas Confetti CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+
+  <!-- Motion & Tactile Interaction Styles -->
+  <link rel="stylesheet" href="static/css/motion.css">
+
   <style>
     :root {
-      --primary: #123b57;
-      --primary-light: #1b4d70;
-      --accent: #0ea5e9;
-      --teal: #087e78;
-      --teal-light: #0da29b;
-      --emerald: #10b981;
-      --amber: #f59e0b;
-      --rose: #ef4444;
-      --ink: #0f172a;
-      --slate: #334155;
-      --muted: #64748b;
-      --border: #e2e8f0;
-      --surface: #ffffff;
-      --surface-subtle: #f8fafc;
-      --wash: #f1f5f9;
-      --radius-sm: 8px;
-      --radius-md: 12px;
-      --radius-lg: 16px;
-      --shadow-sm: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
-      --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.07), 0 2px 4px -2px rgba(0,0,0,0.05);
-      --shadow-lg: 0 10px 25px -5px rgba(15,23,42,0.08), 0 8px 10px -6px rgba(15,23,42,0.04);
+      /* Dark Palette (Default) */
+      --bg-base: #0d0b1a;
+      --bg-surface: rgba(21, 18, 43, 0.72);
+      --bg-surface-solid: #15122b;
+      --bg-surface-elevated: rgba(30, 26, 60, 0.78);
+      --bg-card: rgba(26, 21, 51, 0.65);
+      --border-glass: rgba(167, 139, 250, 0.22);
+      --border-focus: #a78bfa;
+
+      /* Gen Z Accent Palette */
+      --lavender: #a78bfa;
+      --lavender-glow: rgba(167, 139, 250, 0.35);
+      --pink: #ff5cae;
+      --pink-glow: rgba(255, 92, 174, 0.35);
+      --mint: #5eead4;
+      --mint-glow: rgba(94, 234, 212, 0.35);
+      --peach: #ffb38a;
+      --acid: #e8ff6b;
+
+      /* Text Colors */
+      --text-main: #fbf7ff;
+      --text-muted: #a5a1be;
+      --text-dim: #767096;
+
+      /* Radii & Shadows */
+      --radius-sm: 10px;
+      --radius-md: 18px;
+      --radius-lg: 26px;
+      --radius-pill: 9999px;
+      --shadow-glass: 0 12px 35px -5px rgba(0, 0, 0, 0.45), 0 0 20px rgba(167, 139, 250, 0.08);
+      --shadow-glow: 0 0 25px rgba(167, 139, 250, 0.25);
     }
+
+    [data-theme="light"] {
+      /* Light Palette */
+      --bg-base: #fbf7ff;
+      --bg-surface: rgba(255, 255, 255, 0.82);
+      --bg-surface-solid: #ffffff;
+      --bg-surface-elevated: rgba(243, 238, 255, 0.88);
+      --bg-card: rgba(255, 255, 255, 0.78);
+      --border-glass: rgba(167, 139, 250, 0.28);
+      --border-focus: #7c3aed;
+
+      --text-main: #141026;
+      --text-muted: #5f5a7a;
+      --text-dim: #8b85a8;
+      --shadow-glass: 0 12px 35px -5px rgba(167, 139, 250, 0.12), 0 4px 10px rgba(0,0,0,0.03);
+      --shadow-glow: 0 0 25px rgba(167, 139, 250, 0.18);
+    }
+
     * { box-sizing: border-box; }
+
     body {
       margin: 0;
-      background: var(--wash);
-      color: var(--ink);
-      font: 15px/1.6 "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+      background: var(--bg-base);
+      color: var(--text-main);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-size: 15px;
+      line-height: 1.6;
       -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+      transition: background 0.3s ease, color 0.3s ease;
     }
+
+    /* Gradient Typography */
+    h1, h2, h3, .gradient-title {
+      font-family: 'Space Grotesk', 'Outfit', sans-serif;
+      letter-spacing: -0.03em;
+      font-weight: 700;
+    }
+
+    .gradient-title {
+      background: linear-gradient(135deg, #ffffff 0%, #a78bfa 50%, #ff5cae 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin: 8px 0 12px;
+      font-size: clamp(1.8rem, 4vw, 2.7rem);
+      line-height: 1.15;
+    }
+
+    [data-theme="light"] .gradient-title {
+      background: linear-gradient(135deg, #130f26 0%, #7c3aed 50%, #ff5cae 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    /* Header Container */
     header {
-      background: linear-gradient(135deg, #0b253a 0%, #123b57 60%, #087e78 100%);
-      color: #fff;
-      padding: 32px max(24px, calc((100vw - 1200px) / 2)) 28px;
-      border-bottom: 1px solid rgba(255,255,255,0.1);
+      background: var(--bg-surface);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border-glass);
+      padding: 24px max(24px, calc((100vw - 1200px) / 2)) 22px;
+      position: relative;
+      z-index: 10;
     }
-    .header-content { max-width: 1200px; margin: 0 auto; }
+
+    .header-top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
     .brand-pill {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
-      padding: 4px 12px;
-      background: rgba(255,255,255,0.12);
-      border: 1px solid rgba(255,255,255,0.2);
-      border-radius: 999px;
+      gap: 8px;
+      padding: 6px 14px;
+      background: rgba(167, 139, 250, 0.12);
+      border: 1px solid rgba(167, 139, 250, 0.3);
+      border-radius: var(--radius-pill);
       font-size: 0.78rem;
-      font-weight: 600;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: #cce6f4;
-      margin-bottom: 12px;
-    }
-    h1 { margin: 0 0 10px; font-size: clamp(1.8rem, 3.8vw, 2.5rem); font-weight: 800; letter-spacing: -0.02em; line-height: 1.18; }
-    header p { max-width: 760px; margin: 0; color: #d6e8f2; font-size: 0.98rem; }
-
-    .nav-tabs {
-      max-width: 1200px;
-      margin: 18px auto 0;
-      padding: 0 20px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      border-bottom: 1px solid var(--border);
-    }
-    .tab-btn {
-      padding: 10px 18px;
-      background: transparent;
-      border: none;
-      border-bottom: 3px solid transparent;
-      color: var(--muted);
-      font-weight: 600;
-      font-size: 0.92rem;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      transition: all 0.15s ease;
-      margin-top: 0;
-    }
-    .tab-btn:hover { color: var(--primary); background: rgba(255,255,255,0.5); border-radius: 8px 8px 0 0; }
-    .tab-btn.active { color: var(--primary); border-bottom-color: var(--teal); }
-
-    .capability-status {
-      max-width: 1200px;
-      margin: 16px auto 0;
-      padding: 12px 18px;
-      border: 1px solid #bfd5d9;
-      border-radius: var(--radius-md);
-      background: #e9f4f3;
-      color: #174f55;
-      font-size: 0.9rem;
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: 12px;
-    }
-    .capability-status[data-state="error"] { border-color: #fca5a5; background: #fef2f2; color: #991b1b; }
-    .capability-status strong { font-weight: 700; }
-    .capability-status span { display: inline-flex; align-items: center; gap: 4px; }
-
-    main {
-      max-width: 1200px;
-      margin: 20px auto 40px;
-      padding: 0 20px;
-      display: grid;
-      grid-template-columns: minmax(0, 1.15fr) minmax(320px, 0.85fr);
-      gap: 24px;
-    }
-    .tab-view { display: contents; }
-    .tab-view.hidden { display: none; }
-
-    section, .notice {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
-      box-shadow: var(--shadow-sm);
-      padding: 24px;
-    }
-    .notice {
-      grid-column: 1 / -1;
-      padding: 16px 20px;
-      color: #78350f;
-      background: #fffbeb;
-      border-color: #fde68a;
-      font-size: 0.9rem;
-      display: flex;
-      align-items: flex-start;
-      gap: 12px;
-    }
-    h2 { font-size: 1.28rem; font-weight: 750; margin: 0 0 6px; color: var(--ink); letter-spacing: -0.01em; }
-    .intro { color: var(--muted); margin: 0 0 18px; font-size: 0.92rem; }
-
-    .presets-container {
-      margin-bottom: 20px;
-      padding: 14px 16px;
-      background: var(--surface-subtle);
-      border: 1px dashed #cbd5e1;
-      border-radius: var(--radius-md);
-    }
-    .presets-label {
-      font-size: 0.82rem;
       font-weight: 700;
-      color: var(--muted);
+      letter-spacing: 0.06em;
       text-transform: uppercase;
-      letter-spacing: 0.05em;
-      margin-bottom: 8px;
+      color: var(--lavender);
+      box-shadow: 0 0 15px rgba(167, 139, 250, 0.15);
+      cursor: pointer;
     }
-    .preset-chips { display: flex; flex-wrap: wrap; gap: 8px; }
-    .preset-btn {
-      margin-top: 0;
-      padding: 6px 12px;
-      background: #ffffff;
-      border: 1px solid #cbd5e1;
-      border-radius: 999px;
-      color: var(--slate);
-      font-size: 0.82rem;
+
+    .header-controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .header-pill-btn, .footer-pill-btn {
+      background: var(--bg-surface-elevated);
+      border: 1px solid var(--border-glass);
+      color: var(--text-main);
+      padding: 6px 14px;
+      border-radius: var(--radius-pill);
+      font-size: 0.8rem;
       font-weight: 600;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      transition: all 0.15s ease;
+      transition: all 0.2s ease;
     }
-    .preset-btn:hover {
-      background: #f0fdf4;
-      border-color: var(--teal);
-      color: var(--teal);
+    .header-pill-btn:hover, .footer-pill-btn:hover {
+      border-color: var(--lavender);
+      box-shadow: 0 0 12px var(--lavender-glow);
       transform: translateY(-1px);
     }
 
-    .fields { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-    label { font-size: 0.86rem; font-weight: 650; display: block; margin-bottom: 6px; color: var(--slate); }
+    .hero-greeting {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.95rem;
+      color: var(--mint);
+      font-weight: 600;
+      letter-spacing: 0.02em;
+    }
+
+    .hero-tagline {
+      margin: 0;
+      color: var(--text-muted);
+      font-size: 1.02rem;
+      max-width: 820px;
+      line-height: 1.55;
+    }
+
+    /* Segmented Pill Navigation */
+    .nav-tabs {
+      max-width: 1200px;
+      margin: 20px auto 0;
+      padding: 6px;
+      display: flex;
+      gap: 8px;
+      background: var(--bg-surface);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--border-glass);
+      border-radius: var(--radius-pill);
+      box-shadow: var(--shadow-glass);
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .nav-tabs::-webkit-scrollbar { display: none; }
+
+    .tab-btn {
+      flex: 1;
+      min-width: max-content;
+      padding: 10px 18px;
+      background: transparent;
+      border: 1px solid transparent;
+      border-radius: var(--radius-pill);
+      color: var(--text-muted);
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .tab-btn:hover {
+      color: var(--text-main);
+      background: rgba(167, 139, 250, 0.08);
+    }
+    .tab-btn.active {
+      color: #0d0b1a;
+      background: linear-gradient(135deg, #a78bfa 0%, #ff5cae 100%);
+      border-color: transparent;
+      font-weight: 700;
+      box-shadow: 0 4px 18px rgba(255, 92, 174, 0.35);
+    }
+    [data-theme="light"] .tab-btn.active {
+      color: #ffffff;
+    }
+
+    /* System Availability Status Pill */
+    .capability-status {
+      max-width: 1200px;
+      margin: 14px auto 0;
+      padding: 10px 18px;
+      border-radius: var(--radius-md);
+      background: var(--bg-surface);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--border-glass);
+      font-size: 0.84rem;
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items: center;
+      color: var(--text-muted);
+    }
+    .capability-status strong { color: var(--text-main); }
+    .capability-status[data-state="ready"] { border-color: rgba(94, 234, 212, 0.4); }
+    .capability-status[data-state="error"] { border-color: rgba(255, 92, 174, 0.4); }
+
+    /* Main Container & Layout */
+    main {
+      max-width: 1200px;
+      width: 100%;
+      margin: 20px auto 40px;
+      padding: 0 20px;
+      flex: 1;
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 24px;
+      align-items: start;
+    }
+    main.tab-view.hidden { display: none !important; }
+    main.tab-view { display: grid; }
+    #view-analytics, #view-diagnostics, #view-history {
+      grid-template-columns: 1fr;
+    }
+
+    /* Glass Cards / Sections */
+    section, .planner-section, .full-width-section {
+      background: var(--bg-surface);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--border-glass);
+      border-radius: var(--radius-lg);
+      padding: 28px;
+      box-shadow: var(--shadow-glass);
+      position: relative;
+    }
+    .full-width-section { grid-column: 1 / -1; }
+    .planner-section { grid-column: 1 / -1; margin-top: 10px; }
+
+    h2 {
+      margin: 0 0 8px;
+      font-size: 1.35rem;
+      color: var(--text-main);
+    }
+    p.intro {
+      margin: 0 0 20px;
+      color: var(--text-muted);
+      font-size: 0.92rem;
+      line-height: 1.5;
+    }
+
+    /* Presets Chips */
+    .presets-container {
+      background: var(--bg-surface-elevated);
+      border: 1px dashed var(--border-glass);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      margin-bottom: 22px;
+    }
+    .presets-label {
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--lavender);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .preset-chips {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 10px;
+    }
+    .preset-btn {
+      padding: 10px 14px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-glass);
+      border-radius: var(--radius-sm);
+      color: var(--text-main);
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.84rem;
+      font-weight: 600;
+      text-align: left;
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .preset-btn:hover {
+      border-color: var(--lavender);
+      background: rgba(167, 139, 250, 0.12);
+      box-shadow: 0 0 16px var(--lavender-glow);
+      transform: translateY(-2px);
+    }
+
+    /* Two-Column Form Grid */
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+    @media (max-width: 600px) {
+      .form-grid { grid-template-columns: 1fr; }
+    }
+
+    label {
+      display: block;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--text-main);
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
     input, select {
       width: 100%;
-      min-height: 42px;
-      padding: 9px 12px;
-      border: 1px solid #cbd5e1;
+      padding: 12px 14px;
+      background: var(--bg-surface-elevated);
+      border: 1px solid var(--border-glass);
       border-radius: var(--radius-sm);
-      color: var(--ink);
-      font: inherit;
-      background: white;
-      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+      color: var(--text-main);
+      font-family: 'Inter', sans-serif;
+      font-size: 0.94rem;
+      outline: none;
+      transition: all 0.2s ease;
     }
     input:focus, select:focus {
-      outline: none;
-      border-color: var(--teal);
-      box-shadow: 0 0 0 3px rgba(8, 126, 120, 0.15);
+      border-color: var(--lavender);
+      box-shadow: 0 0 0 3px var(--lavender-glow);
+      background: var(--bg-surface-solid);
     }
-    .hint { display: block; color: var(--muted); font-size: 0.74rem; margin-top: 4px; }
+    .hint {
+      display: block;
+      margin-top: 4px;
+      font-size: 0.76rem;
+      color: var(--text-dim);
+    }
 
-    button {
-      border: 0;
-      border-radius: var(--radius-sm);
-      background: var(--primary);
-      color: white;
-      padding: 12px 22px;
-      font: inherit;
+    /* Buttons */
+    #submit-button, #study-plan-button {
+      width: 100%;
+      padding: 14px 22px;
+      background: linear-gradient(135deg, #a78bfa 0%, #ff5cae 100%);
+      border: none;
+      border-radius: var(--radius-pill);
+      color: #0d0b1a;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1rem;
       font-weight: 700;
+      letter-spacing: 0.02em;
       cursor: pointer;
-      margin-top: 20px;
-      transition: background 0.15s ease, transform 0.1s ease;
+      box-shadow: 0 8px 25px rgba(255, 92, 174, 0.35);
+      transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
-    button:hover { background: var(--primary-light); }
-    button:disabled { opacity: 0.58; cursor: wait; }
+    [data-theme="light"] #submit-button, [data-theme="light"] #study-plan-button {
+      color: #ffffff;
+    }
+    #submit-button:hover, #study-plan-button:hover {
+      box-shadow: 0 12px 30px rgba(255, 92, 174, 0.5), 0 0 20px var(--lavender-glow);
+      transform: translateY(-2px) scale(1.02);
+    }
+
     .btn-secondary {
-      background: white;
-      color: var(--slate);
-      border: 1px solid #cbd5e1;
-      padding: 8px 14px;
-      font-size: 0.86rem;
-      margin-top: 0;
-      border-radius: var(--radius-sm);
+      padding: 8px 16px;
+      background: var(--bg-surface-elevated);
+      border: 1px solid var(--border-glass);
+      border-radius: var(--radius-pill);
+      color: var(--text-main);
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.84rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
     }
-    .btn-secondary:hover { background: #f8fafc; color: var(--ink); border-color: #94a3b8; }
+    .btn-secondary:hover {
+      border-color: var(--mint);
+      box-shadow: 0 0 14px var(--mint-glow);
+    }
 
-    .status { min-height: 24px; margin: 12px 0 0; color: var(--muted); font-size: 0.9rem; }
-    .status.error { color: #dc2626; font-weight: 600; }
+    /* Status Notifications */
+    .status {
+      margin-top: 14px;
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      min-height: 20px;
+    }
+    .status.error {
+      color: var(--pink);
+      font-weight: 600;
+    }
 
-    .results { display: flex; flex-direction: column; gap: 14px; }
+    /* Results Cards Stack */
+    .results {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin-top: 12px;
+    }
     .result-card {
-      border: 1px solid var(--border);
+      background: var(--bg-surface-elevated);
+      border: 1px solid var(--border-glass);
       border-radius: var(--radius-md);
-      padding: 18px;
-      background: #ffffff;
-      box-shadow: var(--shadow-sm);
-      transition: transform 0.15s ease;
+      padding: 18px 20px;
+      position: relative;
+      box-shadow: var(--shadow-glass);
+      transition: border-color 0.2s ease, transform 0.2s ease;
     }
-    .result-card h3 { font-size: 0.95rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: var(--muted); margin: 0 0 8px; }
-    .big { font-size: 2.2rem; font-weight: 850; color: var(--primary); line-height: 1.1; margin: 4px 0 8px; }
-    .small { font-size: 0.84rem; color: var(--muted); margin: 0; }
+    .result-card h3 {
+      margin: 0 0 6px;
+      font-size: 0.96rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .result-card .big {
+      font-family: 'Space Grotesk', 'Outfit', sans-serif;
+      font-size: 2.8rem;
+      font-weight: 800;
+      line-height: 1;
+      margin: 8px 0;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* Status Badges */
     .badge {
       display: inline-flex;
       align-items: center;
       gap: 6px;
       padding: 4px 12px;
-      border-radius: 999px;
+      border-radius: var(--radius-pill);
+      font-size: 0.78rem;
       font-weight: 700;
-      font-size: 0.82rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 8px;
     }
-    .badge.risk-low { background: #dcfce7; color: #166534; }
-    .badge.risk-moderate { background: #fef3c7; color: #92400e; }
-    .badge.risk-high { background: #fee2e2; color: #991b1b; }
+    .risk-low {
+      background: rgba(94, 234, 212, 0.15);
+      border: 1px solid rgba(94, 234, 212, 0.4);
+      color: var(--mint);
+    }
+    .risk-moderate {
+      background: rgba(255, 179, 138, 0.15);
+      border: 1px solid rgba(255, 179, 138, 0.4);
+      color: var(--peach);
+    }
+    .risk-high {
+      background: rgba(255, 92, 174, 0.15);
+      border: 1px solid rgba(255, 92, 174, 0.4);
+      color: var(--pink);
+    }
 
+    /* Progress Tracks */
     .progress-track {
-      width: 100%;
-      height: 10px;
-      background: #e2e8f0;
-      border-radius: 999px;
+      height: 8px;
+      background: rgba(167, 139, 250, 0.15);
+      border-radius: var(--radius-pill);
       overflow: hidden;
       margin: 8px 0;
     }
-    .progress-fill { height: 100%; border-radius: 999px; transition: width 0.4s ease; }
-
-    .recommendation {
-      padding: 14px 0;
-      border-top: 1px solid var(--border);
+    .progress-fill {
+      height: 100%;
+      border-radius: var(--radius-pill);
+      transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
-    .recommendation:first-of-type { border-top: 0; padding-top: 4px; }
-    .recommendation strong { color: var(--ink); font-size: 0.95rem; display: block; margin-bottom: 4px; }
-    .recommendation p { margin: 4px 0; font-size: 0.88rem; color: var(--slate); }
 
-    .planner-section { grid-column: 1 / -1; }
+    /* Benchmark Comparison Rows */
+    .benchmark-row {
+      margin-top: 10px;
+    }
+    .benchmark-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.8rem;
+      margin-bottom: 4px;
+      color: var(--text-dim);
+    }
+    .benchmark-bars {
+      height: 8px;
+      background: rgba(167, 139, 250, 0.15);
+      border-radius: var(--radius-pill);
+      overflow: hidden;
+    }
+    .benchmark-val {
+      height: 100%;
+      border-radius: var(--radius-pill);
+    }
+    .benchmark-student {
+      background: linear-gradient(90deg, #a78bfa 0%, #ff5cae 100%);
+    }
+
+    /* What-If Simulator Panel */
+    .simulator-box {
+      margin-top: 20px;
+      background: var(--bg-surface-elevated);
+      border: 1px solid rgba(94, 234, 212, 0.35);
+      border-radius: var(--radius-md);
+      padding: 20px;
+      box-shadow: 0 0 20px rgba(94, 234, 212, 0.1);
+    }
+    .sim-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin: 14px 0 16px;
+    }
+    @media (max-width: 600px) { .sim-row { grid-template-columns: 1fr; } }
+    .sim-slider-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.82rem;
+      color: var(--mint);
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+    input[type="range"] {
+      -webkit-appearance: none;
+      width: 100%;
+      height: 6px;
+      background: rgba(94, 234, 212, 0.2);
+      border-radius: 999px;
+      padding: 0;
+    }
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--mint);
+      cursor: pointer;
+      box-shadow: 0 0 10px var(--mint);
+      transition: transform 0.15s ease;
+    }
+    input[type="range"]::-webkit-slider-thumb:hover {
+      transform: scale(1.25);
+    }
+    .sim-results-badge {
+      margin-top: 14px;
+      padding: 12px 16px;
+      background: rgba(94, 234, 212, 0.12);
+      border: 1px solid rgba(94, 234, 212, 0.4);
+      border-radius: var(--radius-sm);
+      color: var(--mint);
+      font-weight: 600;
+      font-size: 0.88rem;
+    }
+
+    /* Weekly Study Plan */
     .availability-grid {
       display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 14px;
+      grid-template-columns: repeat(auto-fit, minmax(135px, 1fr));
+      gap: 12px;
+      margin-bottom: 20px;
     }
     .plan-days {
       display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
       gap: 12px;
-      margin-top: 18px;
+      margin-top: 16px;
     }
     .plan-day {
-      border: 1px solid var(--border);
-      border-radius: var(--radius-md);
-      padding: 14px 16px;
-      background: #ffffff;
-      box-shadow: var(--shadow-sm);
-    }
-    .plan-day h3 { font-size: 0.96rem; font-weight: 700; margin: 0 0 8px; color: var(--primary); }
-    .plan-day ul { padding-left: 18px; margin: 6px 0; }
-    .plan-day li { font-size: 0.88rem; color: var(--slate); margin-bottom: 4px; }
-
-    /* Comparison Bar Visual */
-    .benchmark-container {
-      margin-top: 14px;
-      padding: 12px 14px;
-      background: var(--surface-subtle);
+      background: var(--bg-surface-elevated);
+      border: 1px solid var(--border-glass);
       border-radius: var(--radius-sm);
-      border: 1px solid var(--border);
+      padding: 14px;
     }
-    .benchmark-title { font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); margin-bottom: 8px; }
-    .benchmark-row { margin-bottom: 8px; }
-    .benchmark-header { display: flex; justify-content: space-between; font-size: 0.78rem; font-weight: 600; margin-bottom: 3px; }
-    .benchmark-bars { position: relative; height: 8px; background: #e2e8f0; border-radius: 4px; overflow: hidden; }
-    .benchmark-val { position: absolute; height: 100%; border-radius: 4px; }
-    .benchmark-student { background: var(--teal); z-index: 2; opacity: 0.9; }
+    .plan-day h3 {
+      font-size: 0.85rem;
+      color: var(--lavender);
+      margin: 0 0 8px;
+    }
+    .plan-day ul {
+      margin: 0;
+      padding-left: 16px;
+      font-size: 0.82rem;
+      color: var(--text-muted);
+    }
+    .plan-day li { margin-bottom: 4px; }
 
-    /* What-If Simulator Drawer */
-    .simulator-box {
-      margin-top: 14px;
-      padding: 16px;
-      background: #f0fdfa;
-      border: 1px solid #ccfbf1;
-      border-radius: var(--radius-md);
-    }
-    .sim-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 10px; }
-    .sim-slider-label { font-size: 0.82rem; font-weight: 600; color: var(--slate); display: flex; justify-content: space-between; }
-    .sim-results-badge {
-      display: inline-block;
-      padding: 8px 12px;
-      border-radius: var(--radius-sm);
-      background: white;
-      border: 1px solid #99f6e4;
-      font-size: 0.88rem;
-      font-weight: 700;
-      color: #0f766e;
-      margin-top: 8px;
-    }
-
-    /* Cohort Analytics & Diagnostics */
-    .full-width-section { grid-column: 1 / -1; }
+    /* Bento-Grid KPI Deck */
     .kpi-deck {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
       gap: 16px;
-      margin-bottom: 24px;
+      margin-top: 16px;
     }
     .kpi-tile {
-      background: var(--surface);
-      border: 1px solid var(--border);
+      background: var(--bg-surface-elevated);
+      border: 1px solid var(--border-glass);
       border-radius: var(--radius-md);
-      padding: 16px;
-      box-shadow: var(--shadow-sm);
+      padding: 22px;
+      box-shadow: var(--shadow-glass);
+      transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
-    .kpi-label { font-size: 0.78rem; font-weight: 700; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
-    .kpi-number { font-size: 1.8rem; font-weight: 800; color: var(--primary); line-height: 1.2; }
-    .kpi-sub { font-size: 0.78rem; color: var(--muted); margin-top: 2px; }
+    .kpi-tile:hover {
+      border-color: var(--lavender);
+      box-shadow: 0 10px 30px var(--lavender-glow);
+      transform: translateY(-3px);
+    }
+    .kpi-label {
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      color: var(--text-dim);
+      margin-bottom: 8px;
+    }
+    .kpi-number {
+      font-family: 'Space Grotesk', 'JetBrains Mono', monospace;
+      font-size: 2.2rem;
+      font-weight: 800;
+      color: var(--text-main);
+      line-height: 1.1;
+      margin-bottom: 4px;
+    }
+    .kpi-sub {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
 
+    /* Tables */
     .data-table {
       width: 100%;
-      border-collapse: collapse;
-      font-size: 0.88rem;
+      border-collapse: separate;
+      border-spacing: 0;
       margin-top: 12px;
+      font-size: 0.88rem;
     }
     .data-table th, .data-table td {
-      padding: 10px 14px;
+      padding: 12px 16px;
       text-align: left;
-      border-bottom: 1px solid var(--border);
+      border-bottom: 1px solid var(--border-glass);
     }
-    .data-table th { background: var(--surface-subtle); color: var(--slate); font-weight: 700; }
-    .data-table tr:hover td { background: #f8fafc; }
+    .data-table th {
+      background: var(--bg-surface-elevated);
+      color: var(--lavender);
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .data-table th:first-child { border-top-left-radius: var(--radius-sm); }
+    .data-table th:last-child { border-top-right-radius: var(--radius-sm); }
+    .data-table tr:hover td {
+      background: rgba(167, 139, 250, 0.05);
+    }
+
+    /* Ethical Safeguard Notice */
+    .notice {
+      grid-column: 1 / -1;
+      background: var(--bg-surface-elevated);
+      border: 1px solid var(--border-glass);
+      border-left: 4px solid var(--lavender);
+      border-radius: var(--radius-md);
+      padding: 16px 20px;
+      font-size: 0.86rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+    .notice strong { color: var(--text-main); }
+
+    /* Footer */
+    footer {
+      max-width: 1200px;
+      width: 100%;
+      padding: 20px;
+      margin: auto auto 30px;
+      text-align: center;
+      position: relative;
+    }
+    .footer-divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent 0%, var(--lavender) 50%, transparent 100%);
+      margin-bottom: 22px;
+      opacity: 0.5;
+    }
+    .footer-content {
+      font-size: 0.86rem;
+      color: var(--text-muted);
+    }
+    .footer-content strong { color: var(--text-main); }
+    .footer-sub {
+      font-size: 0.78rem;
+      color: var(--text-dim);
+      margin-top: 4px;
+    }
+    .footer-controls {
+      margin-top: 14px;
+    }
 
     /* Print Stylesheet */
     @media print {
       body { background: white; color: black; font-size: 12pt; }
-      header, .nav-tabs, #capability-status, .presets-container, #submit-button, .planner-section, footer, .simulator-box, button {
+      header, .nav-tabs, #capability-status, .presets-container, #submit-button, .planner-section, footer, .simulator-box, button, .aurora-bg, .cursor-dot, .cursor-ring {
         display: none !important;
       }
       main { display: block; max-width: 100%; padding: 0; margin: 0; }
-      section { border: none; box-shadow: none; padding: 0; margin-bottom: 20px; }
-      .result-card { page-break-inside: avoid; border: 1px solid #ccc; margin-bottom: 10px; }
+      section { border: 1px solid #ccc; box-shadow: none; }
       #student-form { display: none; }
-    }
-
-    footer {
-      max-width: 1200px;
-      padding: 0 20px 40px;
-      margin: auto;
-      color: var(--muted);
-      font-size: 0.84rem;
-      text-align: center;
     }
 
     @media (max-width: 900px) {
       main { grid-template-columns: 1fr; }
-      .notice, .planner-section { grid-column: auto; }
-      .availability-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-      .plan-days { grid-template-columns: 1fr; }
-    }
-    @media (max-width: 500px) {
-      header { padding: 24px 16px; }
-      .fields, .availability-grid, .sim-row { grid-template-columns: 1fr; }
-      section { padding: 18px; }
     }
   </style>
 </head>
 <body>
+  <!-- Aurora Background Mesh Blobs -->
+  <div class="aurora-bg" aria-hidden="true">
+    <div class="aurora-blob blob-1"></div>
+    <div class="aurora-blob blob-2"></div>
+    <div class="aurora-blob blob-3"></div>
+  </div>
+
   <header>
+    <div class="header-top-bar">
+      <div class="brand-pill shimmer-text">
+        <span class="sticker-emoji">✨</span> EduPredict AI · Capstone Prototype
+      </div>
+      <div class="header-controls">
+        <button id="btn-auth-modal" class="header-pill-btn" type="button" aria-label="Sign In">👤 Sign In</button>
+        <button id="theme-toggle" class="header-pill-btn" type="button" aria-label="Toggle Theme">☀️ Light</button>
+        <button id="sound-toggle" class="header-pill-btn" type="button" aria-label="Toggle Sound">🔇 Muted</button>
+      </div>
+    </div>
     <div class="header-content">
-      <div class="brand-pill">EduPredict AI · Capstone Decision-Support Prototype</div>
-      <h1>Student Performance Prediction & Support System</h1>
-      <p>Enter academic indicators known prior to semester completion. EduPredict AI provides machine learning estimates, academic risk screening, transparent study planning guidance, what-if simulations, and cohort analytics.</p>
+      <div id="hero-greeting" class="hero-greeting">Welcome back!</div>
+      <h1 class="gradient-title">Student Performance Prediction &amp; Support System</h1>
+      <p class="hero-tagline">AI-powered academic trajectory forecasting, proactive risk screening, and habit optimization — built with real ML rigor.</p>
     </div>
   </header>
 
   <nav class="nav-tabs" aria-label="Main Navigation">
-    <button class="tab-btn active" id="tab-student" type="button">🎯 Student Assessment &amp; Planner</button>
-    <button class="tab-btn" id="tab-analytics" type="button">📊 Cohort Analytics (5,000 Students)</button>
-    <button class="tab-btn" id="tab-diagnostics" type="button">📈 Model Diagnostics &amp; Metrics</button>
-    <button class="tab-btn" id="tab-history" type="button">🕒 Prediction Audit History</button>
+    <button class="tab-btn active" id="tab-student" type="button"><span class="sticker-emoji">🎯</span> Student Assessment &amp; Planner</button>
+    <button class="tab-btn" id="tab-analytics" type="button"><span class="sticker-emoji">📊</span> Cohort Analytics (5,000 Students)</button>
+    <button class="tab-btn" id="tab-diagnostics" type="button"><span class="sticker-emoji">📈</span> Model Diagnostics &amp; Metrics</button>
+    <button class="tab-btn" id="tab-history" type="button"><span class="sticker-emoji">🕒</span> Prediction Audit History</button>
   </nav>
 
   <div id="capability-status" class="capability-status" role="status" aria-live="polite" aria-atomic="true" aria-busy="true">
-    Checking app and model availability…
+    <span class="status-pulse-dot waking"></span> Checking app and model availability…
   </div>
 
   <!-- TAB 1: STUDENT ASSESSMENT & PLANNER -->
@@ -423,58 +808,61 @@
       <p class="intro">Enter indicators available before outcomes are determined. Student ID and Final CGPA are intentionally excluded to prevent leakage.</p>
 
       <div class="presets-container">
-        <div class="presets-label">⚡ Quick Demo Presets (Viva / Evaluation)</div>
+        <div class="presets-label"><span class="sticker-emoji">⚡</span> Quick Demo Presets (Viva / Evaluation)</div>
         <div class="preset-chips">
-          <button class="preset-btn" type="button" data-preset="high_achiever">🌟 High Achiever (CS)</button>
-          <button class="preset-btn" type="button" data-preset="balanced_student">⚖️ Balanced Average (Biz)</button>
-          <button class="preset-btn" type="button" data-preset="at_risk_student">⚠️ Academic At-Risk (Eng)</button>
-          <button class="preset-btn" type="button" data-preset="sleep_deprived">🌙 Sleep Deprived (Psych)</button>
+          <button class="preset-btn" type="button" data-preset="high_achiever"><span class="sticker-emoji">🌟</span> High Achiever (CS)</button>
+          <button class="preset-btn" type="button" data-preset="balanced_student"><span class="sticker-emoji">⚖️</span> Balanced Average (Biz)</button>
+          <button class="preset-btn" type="button" data-preset="at_risk_student"><span class="sticker-emoji">⚠️</span> Academic At-Risk (Eng)</button>
+          <button class="preset-btn" type="button" data-preset="sleep_deprived"><span class="sticker-emoji">🌙</span> Sleep Deprived (Psych)</button>
         </div>
       </div>
 
       <form id="student-form" novalidate>
-        <div class="fields">
+        <div class="form-grid">
           <div>
             <label for="gender">Gender</label>
             <select id="gender" name="Gender" required>
-              <option value="">Choose…</option>
-              <option>Female</option>
-              <option>Male</option>
+              <option value="">Select gender…</option>
+              <option value="Female">Female</option>
+              <option value="Male">Male</option>
+              <option value="Other">Other</option>
             </select>
+            <span class="hint">Demographic covariate.</span>
           </div>
           <div>
             <label for="major">Academic Major</label>
             <select id="major" name="Major" required>
-              <option value="">Choose…</option>
-              <option>Business</option>
-              <option>Computer Science</option>
-              <option>Economics</option>
-              <option>Engineering</option>
-              <option>Mathematics</option>
-              <option>Psychology</option>
+              <option value="">Select major…</option>
+              <option value="Business">Business</option>
+              <option value="Computer Science">Computer Science</option>
+              <option value="Economics">Economics</option>
+              <option value="Engineering">Engineering</option>
+              <option value="Psychology">Psychology</option>
             </select>
+            <span class="hint">Declared degree field.</span>
           </div>
           <div>
             <label for="age">Age</label>
             <input id="age" name="Age" type="number" min="10" max="100" step="1" required>
+            <span class="hint">Years of age (10 to 100).</span>
           </div>
           <div>
             <label for="attendance">Attendance Percentage (%)</label>
             <input id="attendance" name="Attendance_Pct" type="number" min="0" max="100" step="0.1" required>
-            <span class="hint">Cohort average is 83.8%. Enter 0 to 100.</span>
+            <span class="hint">Attendance rate (0 to 100).</span>
           </div>
           <div>
             <label for="study">Daily Study Hours</label>
             <input id="study" name="Study_Hours_Per_Day" type="number" min="0" max="24" step="0.1" required>
-            <span class="hint">Independent daily study time (0 to 24).</span>
+            <span class="hint">Self-study time (0 to 24).</span>
           </div>
           <div>
-            <label for="previous">Previous CGPA (Prior Term)</label>
-            <input id="previous" name="Previous_CGPA" type="number" min="0" max="4" step="0.01" required>
-            <span class="hint">Cumulative GPA from preceding semester (0.00 to 4.00).</span>
+            <label for="previous_cgpa">Previous CGPA</label>
+            <input id="previous_cgpa" name="Previous_CGPA" type="number" min="0" max="4" step="0.01" required>
+            <span class="hint">Prior semester GPA (0 to 4.00).</span>
           </div>
           <div>
-            <label for="sleep">Sleep Hours per Day</label>
+            <label for="sleep">Nightly Sleep Hours</label>
             <input id="sleep" name="Sleep_Hours" type="number" min="0" max="24" step="0.1" required>
             <span class="hint">Average nightly sleep (0 to 24).</span>
           </div>
@@ -497,15 +885,15 @@
       <p class="intro">Regression prediction, experimental risk estimate, and rule-based guidance are reported separately.</p>
 
       <div id="results" class="results" aria-live="polite" aria-busy="false">
-        <p class="small">Submit the student information form to calculate performance forecasts and support suggestions.</p>
+        <p class="small" style="color: var(--text-dim);">Submit the student information form to calculate performance forecasts and support suggestions.</p>
       </div>
 
       <!-- What-If Simulator Panel (Appears after submission) -->
       <div id="simulator-container" class="simulator-box" style="display: none;">
-        <div style="font-weight: 700; color: #0f766e; margin-bottom: 6px; font-size: 0.95rem;">
+        <div style="font-weight: 700; color: var(--mint); margin-bottom: 6px; font-size: 0.95rem;">
           🔬 Interactive "What-If" Academic Improvement Simulator
         </div>
-        <p class="small" style="color: #115e59; margin-bottom: 12px;">
+        <p class="small" style="color: var(--text-muted); margin-bottom: 12px;">
           Adjust the behavioral levers below to simulate how targeted habit improvements change the predicted CGPA and reduce risk.
         </p>
         <div class="sim-row">
@@ -524,7 +912,7 @@
             <input id="slider-sim-study" type="range" min="0" max="5" step="0.5" value="1.5">
           </div>
         </div>
-        <button id="btn-run-sim" type="button" class="btn-secondary" style="background: #0f766e; color: white; border: none; font-weight: 600;">
+        <button id="btn-run-sim" type="button" class="btn-secondary" style="background: linear-gradient(135deg, #0d9488 0%, #14b8a6 100%); color: white; border: none; font-weight: 600;">
           Simulate Improvement Trajectory
         </button>
         <div id="sim-output" class="sim-results-badge" style="display: none;"></div>
@@ -539,13 +927,13 @@
       <p class="intro">Enter available study minutes per day. The planner builds a balanced, Pomodoro-style schedule with scheduled rest intervals.</p>
       <form id="study-plan-form">
         <div class="availability-grid">
-          <div><label for="minutes-monday">Monday Minutes</label><input id="minutes-monday" data-day="Monday" type="number" min="0" max="480" step="1" value="60" required></div>
-          <div><label for="minutes-tuesday">Tuesday Minutes</label><input id="minutes-tuesday" data-day="Tuesday" type="number" min="0" max="480" step="1" value="60" required></div>
-          <div><label for="minutes-wednesday">Wednesday Minutes</label><input id="minutes-wednesday" data-day="Wednesday" type="number" min="0" max="480" step="1" value="60" required></div>
-          <div><label for="minutes-thursday">Thursday Minutes</label><input id="minutes-thursday" data-day="Thursday" type="number" min="0" max="480" step="1" value="60" required></div>
-          <div><label for="minutes-friday">Friday Minutes</label><input id="minutes-friday" data-day="Friday" type="number" min="0" max="480" step="1" value="45" required></div>
-          <div><label for="minutes-saturday">Saturday Minutes</label><input id="minutes-saturday" data-day="Saturday" type="number" min="0" max="480" step="1" value="90" required></div>
-          <div><label for="minutes-sunday">Sunday Minutes</label><input id="minutes-sunday" data-day="Sunday" type="number" min="0" max="480" step="1" value="0" required></div>
+          <div><label for="minutes-monday">Monday Mins</label><input id="minutes-monday" data-day="Monday" type="number" min="0" max="480" step="1" value="60" required></div>
+          <div><label for="minutes-tuesday">Tuesday Mins</label><input id="minutes-tuesday" data-day="Tuesday" type="number" min="0" max="480" step="1" value="60" required></div>
+          <div><label for="minutes-wednesday">Wednesday Mins</label><input id="minutes-wednesday" data-day="Wednesday" type="number" min="0" max="480" step="1" value="60" required></div>
+          <div><label for="minutes-thursday">Thursday Mins</label><input id="minutes-thursday" data-day="Thursday" type="number" min="0" max="480" step="1" value="60" required></div>
+          <div><label for="minutes-friday">Friday Mins</label><input id="minutes-friday" data-day="Friday" type="number" min="0" max="480" step="1" value="45" required></div>
+          <div><label for="minutes-saturday">Saturday Mins</label><input id="minutes-saturday" data-day="Saturday" type="number" min="0" max="480" step="1" value="90" required></div>
+          <div><label for="minutes-sunday">Sunday Mins</label><input id="minutes-sunday" data-day="Sunday" type="number" min="0" max="480" step="1" value="0" required></div>
           <div>
             <label for="focus-areas">Focus Areas <span class="hint">Optional; comma-separated.</span></label>
             <input id="focus-areas" type="text" maxlength="1000" placeholder="Lecture notes, Problem sets, Revision">
@@ -555,7 +943,7 @@
         <p id="study-plan-status" class="status" role="status" aria-live="polite"></p>
       </form>
       <div id="study-plan-results" class="plan-days" aria-live="polite" aria-busy="false">
-        <p class="small">Your customized weekly schedule blocks will appear here.</p>
+        <p class="small" style="color: var(--text-dim);">Your customized weekly schedule blocks will appear here.</p>
       </div>
     </section>
 
@@ -600,7 +988,7 @@
         </div>
       </div>
 
-      <h3 style="margin-top: 24px; font-size: 1.1rem; color: var(--primary);">Academic Performance by Major</h3>
+      <h3 style="margin-top: 28px; font-size: 1.15rem; color: var(--lavender);">Academic Performance by Major</h3>
       <div style="overflow-x: auto;">
         <table class="data-table" id="majors-table">
           <thead>
@@ -619,7 +1007,7 @@
         </table>
       </div>
 
-      <h3 style="margin-top: 28px; font-size: 1.1rem; color: var(--primary);">Academic Honors Classifications</h3>
+      <h3 style="margin-top: 32px; font-size: 1.15rem; color: var(--lavender);">Academic Honors Classifications</h3>
       <div class="kpi-deck" style="margin-top: 12px;">
         <div class="kpi-tile">
           <div class="kpi-label">First Class Honors (3.50 - 4.00)</div>
@@ -638,9 +1026,27 @@
         </div>
         <div class="kpi-tile">
           <div class="kpi-label">At-Risk Warning (&lt; 2.00)</div>
-          <div class="kpi-number" style="color: var(--rose);" id="band-risk">42</div>
+          <div class="kpi-number" style="color: var(--pink);" id="band-risk">42</div>
           <div class="kpi-sub">0.8% of student cohort</div>
         </div>
+      </div>
+
+      <!-- Faculty Advisor Batch Screening Tool -->
+      <div style="margin-top: 36px; padding: 22px; background: var(--bg-surface-elevated); border: 1px solid rgba(167, 139, 250, 0.35); border-radius: var(--radius-md);">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 12px;">
+          <div>
+            <h3 style="margin: 0; font-size: 1.2rem; color: var(--mint);">🧑‍🏫 Faculty Advisor Batch Screening Tool</h3>
+            <p class="intro" style="margin: 4px 0 0;">Upload a class or department CSV to screen up to 500 students in milliseconds.</p>
+          </div>
+          <div style="display: flex; gap: 8px;">
+            <button id="btn-download-template" type="button" class="btn-secondary">📥 Download CSV Template</button>
+            <label class="btn-secondary" style="background: linear-gradient(135deg, #a78bfa 0%, #ff5cae 100%); color: #0d0b1a; font-weight: 700; cursor: pointer; padding: 8px 16px; border-radius: var(--radius-pill); border: none;">
+              📤 Upload &amp; Screen Cohort CSV
+              <input id="input-batch-csv" type="file" accept=".csv" style="display: none;">
+            </label>
+          </div>
+        </div>
+        <div id="batch-triage-results" style="display: none; margin-top: 16px;"></div>
       </div>
     </section>
   </main>
@@ -654,48 +1060,48 @@
       <div class="kpi-deck">
         <div class="kpi-tile">
           <div class="kpi-label">Regression Model</div>
-          <div class="kpi-number" style="font-size: 1.4rem;">Gradient Boosting</div>
+          <div class="kpi-number" style="font-size: 1.4rem; color: var(--mint);">Gradient Boosting</div>
           <div class="kpi-sub">Test MAE: 0.0965 · R²: 0.9536</div>
         </div>
         <div class="kpi-tile">
-          <div class="kpi-label">Baseline Improvement</div>
-          <div class="kpi-number" style="font-size: 1.4rem; color: var(--emerald);">-78.2% Error</div>
-          <div class="kpi-sub">Compared to Dummy Mean Baseline</div>
+          <div class="kpi-label">Error Reduction</div>
+          <div class="kpi-number" style="color: var(--lavender);">78.2%</div>
+          <div class="kpi-sub">Compared to Dummy Baseline</div>
         </div>
         <div class="kpi-tile">
-          <div class="kpi-label">Risk Classifier</div>
-          <div class="kpi-number" style="font-size: 1.4rem;">Balanced Random Forest</div>
-          <div class="kpi-sub">Test Recall: 87.5% · ROC-AUC: 0.995</div>
+          <div class="kpi-label">Risk Classification</div>
+          <div class="kpi-number" style="font-size: 1.4rem; color: var(--peach);">Logistic Reg.</div>
+          <div class="kpi-sub">Recall: 87.5% · ROC-AUC: 0.995</div>
         </div>
         <div class="kpi-tile">
-          <div class="kpi-label">Primary Predictor</div>
-          <div class="kpi-number" style="font-size: 1.4rem;">Previous CGPA</div>
-          <div class="kpi-sub">86.4% relative importance</div>
+          <div class="kpi-label">Evaluation Caveat</div>
+          <div class="kpi-number" style="font-size: 1.4rem; color: var(--pink);">8 / 1,000</div>
+          <div class="kpi-sub">Positive test cases (rare class)</div>
         </div>
       </div>
 
-      <h3 style="margin-top: 24px; font-size: 1.1rem; color: var(--primary);">Regression Algorithm Comparison (Test Set)</h3>
+      <h3 style="margin-top: 28px; font-size: 1.15rem; color: var(--lavender);">Candidate Regressor Comparison</h3>
       <div style="overflow-x: auto;">
         <table class="data-table">
           <thead>
             <tr>
-              <th>Candidate Model</th>
-              <th>Mean Absolute Error (MAE)</th>
-              <th>Root Mean Squared Error (RMSE)</th>
+              <th>Model Architecture</th>
+              <th>Test MAE</th>
+              <th>Test RMSE</th>
               <th>R² Score</th>
               <th>Selection Status</th>
             </tr>
           </thead>
           <tbody>
-            <tr style="background: #f0fdf4; font-weight: 600;">
-              <td>Gradient Boosting Regressor</td>
+            <tr style="background: rgba(94, 234, 212, 0.08); font-weight: 600;">
+              <td>✨ Gradient Boosting Regressor</td>
               <td>0.0965</td>
               <td>0.1153</td>
               <td>0.9536</td>
               <td><span class="badge risk-low">Selected Champion</span></td>
             </tr>
             <tr>
-              <td>Ridge Regression (alpha=1.0)</td>
+              <td>Ridge Regression</td>
               <td>0.0980</td>
               <td>0.1171</td>
               <td>0.9522</td>
@@ -709,68 +1115,69 @@
               <td>Evaluated Candidate</td>
             </tr>
             <tr>
-              <td>Random Forest Regressor (n=200)</td>
+              <td>Random Forest Regressor</td>
               <td>0.1042</td>
               <td>0.1251</td>
               <td>0.9458</td>
               <td>Evaluated Candidate</td>
             </tr>
-            <tr style="color: var(--muted);">
+            <tr style="color: var(--text-dim);">
               <td>Dummy Mean Baseline</td>
               <td>0.4432</td>
               <td>0.5198</td>
               <td>-0.0012</td>
-              <td>Reference Baseline</td>
+              <td>Baseline Reference</td>
             </tr>
           </tbody>
         </table>
       </div>
 
-      <h3 style="margin-top: 28px; font-size: 1.1rem; color: var(--primary);">Feature Importance Hierarchy (Permutation Importance)</h3>
-      <div style="margin-top: 12px; display: flex; flex-direction: column; gap: 10px;">
+      <h3 style="margin-top: 32px; font-size: 1.15rem; color: var(--lavender);">Permutation Feature Importance</h3>
+      <p class="intro" style="margin-bottom: 12px;">Relative predictive signal contribution of each feature in the Gradient Boosting model:</p>
+      <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 10px;">
         <div>
-          <div style="display: flex; justify-content: space-between; font-size: 0.84rem; font-weight: 600; margin-bottom: 3px;">
-            <span>1. Previous CGPA (Prior Academic Momentum)</span>
-            <span>86.4%</span>
+          <div style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 4px;">
+            <span>Previous_CGPA (Academic Foundation)</span>
+            <span style="font-weight: 700; color: var(--lavender);">86.4%</span>
           </div>
-          <div style="height: 10px; background: #e2e8f0; border-radius: 5px; overflow: hidden;">
-            <div style="width: 86.4%; height: 100%; background: var(--primary); border-radius: 5px;"></div>
+          <div style="height: 10px; background: rgba(167, 139, 250, 0.15); border-radius: 5px; overflow: hidden;">
+            <div style="width: 86.4%; height: 100%; background: linear-gradient(90deg, #a78bfa 0%, #ff5cae 100%); border-radius: 5px;"></div>
           </div>
         </div>
         <div>
-          <div style="display: flex; justify-content: space-between; font-size: 0.84rem; font-weight: 600; margin-bottom: 3px;">
-            <span>2. Attendance Percentage (Actionable Class Presence)</span>
-            <span>7.8%</span>
+          <div style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 4px;">
+            <span>Attendance_Pct (Behavioral Engagement)</span>
+            <span style="font-weight: 700; color: var(--mint);">7.8%</span>
           </div>
-          <div style="height: 10px; background: #e2e8f0; border-radius: 5px; overflow: hidden;">
-            <div style="width: 7.8%; height: 100%; background: var(--teal); border-radius: 5px;"></div>
-          </div>
-        </div>
-        <div>
-          <div style="display: flex; justify-content: space-between; font-size: 0.84rem; font-weight: 600; margin-bottom: 3px;">
-            <span>3. Daily Study Hours (Actionable Preparation)</span>
-            <span>4.1%</span>
-          </div>
-          <div style="height: 10px; background: #e2e8f0; border-radius: 5px; overflow: hidden;">
-            <div style="width: 4.1%; height: 100%; background: var(--accent); border-radius: 5px;"></div>
+          <div style="height: 10px; background: rgba(167, 139, 250, 0.15); border-radius: 5px; overflow: hidden;">
+            <div style="width: 7.8%; height: 100%; background: var(--mint); border-radius: 5px;"></div>
           </div>
         </div>
         <div>
-          <div style="display: flex; justify-content: space-between; font-size: 0.84rem; font-weight: 600; margin-bottom: 3px;">
-            <span>4. Sleep Hours (Well-being &amp; Cognitive Recovery)</span>
-            <span>1.2%</span>
+          <div style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 4px;">
+            <span>Study_Hours_Per_Day (Study Habit Signal)</span>
+            <span style="font-weight: 700; color: var(--peach);">4.1%</span>
           </div>
-          <div style="height: 10px; background: #e2e8f0; border-radius: 5px; overflow: hidden;">
-            <div style="width: 1.2%; height: 100%; background: var(--amber); border-radius: 5px;"></div>
+          <div style="height: 10px; background: rgba(167, 139, 250, 0.15); border-radius: 5px; overflow: hidden;">
+            <div style="width: 4.1%; height: 100%; background: var(--peach); border-radius: 5px;"></div>
           </div>
         </div>
         <div>
-          <div style="display: flex; justify-content: space-between; font-size: 0.84rem; font-weight: 600; margin-bottom: 3px;">
-            <span>5. Social Activity (Extracurricular Balance)</span>
-            <span>0.5%</span>
+          <div style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 4px;">
+            <span>Sleep_Hours (Well-being Foundation)</span>
+            <span style="font-weight: 700; color: var(--text-muted);">1.2%</span>
           </div>
-          <div style="height: 10px; background: #e2e8f0; border-radius: 5px; overflow: hidden;">
-            <div style="width: 0.5%; height: 100%; background: var(--muted); border-radius: 5px;"></div>
+          <div style="height: 10px; background: rgba(167, 139, 250, 0.15); border-radius: 5px; overflow: hidden;">
+            <div style="width: 1.2%; height: 100%; background: var(--lavender); border-radius: 5px;"></div>
+          </div>
+        </div>
+        <div>
+          <div style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 4px;">
+            <span>Social_Hours_Week (Extracurricular Balance)</span>
+            <span style="font-weight: 700; color: var(--text-dim);">0.5%</span>
+          </div>
+          <div style="height: 10px; background: rgba(167, 139, 250, 0.15); border-radius: 5px; overflow: hidden;">
+            <div style="width: 0.5%; height: 100%; background: var(--text-dim); border-radius: 5px;"></div>
           </div>
         </div>
       </div>
@@ -806,8 +1213,40 @@
     </section>
   </main>
 
+  <!-- Authentication Demo Modal -->
+  <div id="auth-modal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.72); backdrop-filter: blur(8px); z-index: 9999; align-items: center; justify-content: center; padding: 1.5rem;">
+    <div class="card" style="max-width: 440px; width: 100%; border-radius: var(--radius-lg); padding: 2rem; border: 1px solid var(--border-focus); background: var(--card-bg); box-shadow: var(--glow-lavender); position: relative;">
+      <button id="btn-close-auth" type="button" style="position: absolute; top: 1rem; right: 1rem; background: none; border: none; font-size: 1.5rem; color: var(--text-muted); cursor: pointer;" aria-label="Close Modal">&times;</button>
+      <h3 style="margin-top: 0; font-family: var(--font-heading); font-size: 1.4rem; color: var(--text-primary); display: flex; align-items: center; gap: 0.5rem;">
+        <span>🔐</span> Institutional Sign In
+      </h3>
+      <p style="color: var(--text-muted); font-size: 0.88rem; margin-bottom: 1.25rem;">
+        Test role-based access control (RBAC) with pre-seeded institutional demo profiles:
+      </p>
+      <div id="auth-status-msg"></div>
+      <div style="display: flex; flex-direction: column; gap: 0.85rem; margin-top: 1rem;">
+        <button id="btn-demo-student-login" class="pill-btn primary" type="button" style="justify-content: center;">
+          🎓 1-Click Student Login (Alex Turner, CS)
+        </button>
+        <button id="btn-demo-advisor-login" class="pill-btn secondary" type="button" style="justify-content: center;">
+          🏛️ 1-Click Advisor Login (Dr. Sharma)
+        </button>
+      </div>
+      <div style="margin-top: 1.25rem; text-align: center; font-size: 0.78rem; color: var(--text-muted);">
+        Secured by JWT HS256 &amp; PBKDF2-HMAC-SHA256
+      </div>
+    </div>
+  </div>
+
   <footer>
-    EduPredict AI · Capstone Project by Ashok Pradhan · Machine Learning, FastAPI, PostgreSQL &amp; Power BI Analytics
+    <div class="footer-divider"></div>
+    <div class="footer-content">
+      <p>EduPredict AI · Capstone Project by <strong>Ashok Pradhan</strong>, <strong>Rudraksh Mehra</strong> &amp; <strong>Ayush Shukla</strong></p>
+      <p class="footer-sub">Machine Learning · FastAPI · PostgreSQL · Power BI Analytics</p>
+      <div class="footer-controls">
+        <button id="effects-toggle" class="footer-pill-btn" type="button">⚡ Reduce Effects</button>
+      </div>
+    </div>
   </footer>
 
   <script>
@@ -892,6 +1331,7 @@
         }
         statusNode.className = 'status';
         statusNode.textContent = `Applied preset: ${btn.textContent.trim()}`;
+        if (window.showToast) window.showToast(`Applied preset: ${btn.textContent.trim()}`, 'info', '⚡');
       });
     });
 
@@ -906,6 +1346,11 @@
         const health = await response.json();
         capabilityStatus.replaceChildren();
         capabilityStatus.dataset.state = health.ready ? 'ready' : 'error';
+
+        const dot = document.createElement('span');
+        dot.className = 'status-pulse-dot ' + (health.ready ? 'online' : 'error');
+        capabilityStatus.appendChild(dot);
+
         addText(capabilityStatus, 'strong', health.ready ? 'System Status: Ready' : 'System Status: Degraded');
         const predictionState = health.prediction_status === 'available'
           ? 'available (GBR)' : health.prediction_status === 'load_error'
@@ -926,12 +1371,18 @@
       } catch (error) {
         capabilityStatus.replaceChildren();
         capabilityStatus.dataset.state = 'error';
-        addText(capabilityStatus, 'strong', 'App status unavailable');
-        addText(capabilityStatus, 'span', 'Could not reach API health endpoint. Verify uvicorn server is running.');
+        const dot = document.createElement('span');
+        dot.className = 'status-pulse-dot waking';
+        capabilityStatus.appendChild(dot);
+        addText(capabilityStatus, 'strong', 'Waking up or connecting to API…');
+        addText(capabilityStatus, 'span', 'Checking local or cloud endpoint. If on Render free tier, spin-up takes ~30s.');
       } finally {
         capabilityStatus.setAttribute('aria-busy', 'false');
       }
     }
+
+    // Health check polling every 30s
+    setInterval(refreshCapabilityStatus, 30000);
 
     async function post(path, payload) {
       const response = await fetch(API_BASE + path, {
@@ -971,9 +1422,20 @@
       card.replaceChildren();
       addText(card, 'h3', 'Predicted Final CGPA');
       const val = Number(prediction.predicted_cgpa);
-      const big = addText(card, 'div', val.toFixed(2), 'big');
-      if (val >= 3.5) big.style.color = '#087e78';
-      else if (val < 2.0) big.style.color = '#dc2626';
+      const big = addText(card, 'div', '0.00', 'big');
+      if (val >= 3.5) big.style.color = 'var(--mint)';
+      else if (val < 2.0) big.style.color = 'var(--pink)';
+      else big.style.color = 'var(--lavender)';
+
+      if (window.animateValue) {
+        window.animateValue(big, 0.0, val, 700, 2);
+      } else {
+        big.textContent = val.toFixed(2);
+      }
+
+      if (val >= 3.5 && window.triggerSuccessCelebration) {
+        window.triggerSuccessCelebration();
+      }
 
       const bandText = val >= 3.5 ? 'First Class Band'
         : val >= 3.0 ? 'Upper Second Band'
@@ -993,13 +1455,17 @@
       const badgeText = isAtRisk ? '⚠️ High Risk of Warning' : (risk.risk_probability > 0.3 ? '⚡ Moderate Advisory' : '✓ Normal Standing');
       addText(card, 'div', badgeText, 'badge ' + badgeClass);
 
+      if (isAtRisk && window.triggerSupportiveWarning) {
+        window.triggerSupportiveWarning();
+      }
+
       // Probability Bar
       const track = document.createElement('div');
       track.className = 'progress-track';
       const fill = document.createElement('div');
       fill.className = 'progress-fill';
       fill.style.width = Math.min(100, Math.max(4, risk.risk_probability * 100)) + '%';
-      fill.style.background = isAtRisk ? '#ef4444' : (risk.risk_probability > 0.3 ? '#f59e0b' : '#10b981');
+      fill.style.background = isAtRisk ? 'var(--pink)' : (risk.risk_probability > 0.3 ? 'var(--peach)' : 'var(--mint)');
       track.appendChild(fill);
       card.appendChild(track);
 
@@ -1009,44 +1475,59 @@
 
     function renderRecommendations(card, recommendationResult) {
       card.replaceChildren();
-      addText(card, 'h3', 'Rule-Based Recommendations');
-      const suggestions = recommendationResult.recommendations || [];
-      if (!suggestions.length) {
-        addText(card, 'p', 'No routine-based warnings triggered; reported habits meet healthy study heuristics.', 'small');
+      addText(card, 'h3', 'Study & Well-being Guidance');
+      const items = Array.isArray(recommendationResult?.recommendations) ? recommendationResult.recommendations : [];
+      if (!items.length) {
+        addText(card, 'p', 'No rule-based alerts triggered. Maintain current study routine.', 'small');
+      } else {
+        const list = document.createElement('ul');
+        list.style.margin = '8px 0';
+        list.style.paddingLeft = '18px';
+        list.style.fontSize = '0.9rem';
+        list.style.lineHeight = '1.6';
+        for (const item of items) {
+          const li = document.createElement('li');
+          li.style.marginBottom = '6px';
+          const strong = document.createElement('strong');
+          strong.textContent = (item.title || item.metric || 'Recommendation') + ': ';
+          li.appendChild(strong);
+          li.appendChild(document.createTextNode(item.action || item.reason || ''));
+          list.appendChild(li);
+        }
+        card.appendChild(list);
       }
-      for (const item of suggestions) {
-        const wrapper = document.createElement('div');
-        wrapper.className = 'recommendation';
-        addText(wrapper, 'strong', item.title);
-        addText(wrapper, 'p', item.action);
-        addText(wrapper, 'p', `Why: ${item.why}`, 'small');
-        card.appendChild(wrapper);
+      if (recommendationResult?.disclaimer) {
+        addText(card, 'p', recommendationResult.disclaimer, 'small');
       }
-      addText(card, 'p', recommendationResult.disclaimer, 'small');
     }
 
     function renderBenchmarkCard(card, payload) {
       card.replaceChildren();
       addText(card, 'h3', 'Cohort Benchmark Comparison');
-      const bench = document.createElement('div');
-      bench.className = 'benchmark-container';
-      addText(bench, 'div', 'Student vs Class Averages (5,000 Students)', 'benchmark-title');
+      const intro = addText(card, 'p', 'How this student compares against the 5,000 student cohort averages:', 'small');
+      intro.style.marginBottom = '12px';
 
       const metrics = [
-        { label: 'Attendance', student: payload.Attendance_Pct, avg: 83.8, unit: '%', max: 100 },
-        { label: 'Daily Study', student: payload.Study_Hours_Per_Day, avg: 4.5, unit: ' hrs', max: 12 },
-        { label: 'Prior CGPA', student: payload.Previous_CGPA, avg: 3.09, unit: '', max: 4.0 },
-        { label: 'Nightly Sleep', student: payload.Sleep_Hours, avg: 7.0, unit: ' hrs', max: 10 }
+        { label: 'Attendance', student: Number(payload.Attendance_Pct), cohort: 83.8, unit: '%', max: 100 },
+        { label: 'Daily Study', student: Number(payload.Study_Hours_Per_Day), cohort: 4.5, unit: ' hrs', max: 10 },
+        { label: 'Prior CGPA', student: Number(payload.Previous_CGPA), cohort: 3.09, unit: '', max: 4.0 },
+        { label: 'Sleep Hours', student: Number(payload.Sleep_Hours), cohort: 7.0, unit: ' hrs', max: 12 }
       ];
 
+      const bench = document.createElement('div');
       for (const m of metrics) {
         const row = document.createElement('div');
         row.className = 'benchmark-row';
-        const hdr = document.createElement('div');
-        hdr.className = 'benchmark-header';
-        addText(hdr, 'span', m.label);
-        addText(hdr, 'span', `${m.student}${m.unit} (Cohort: ${m.avg}${m.unit})`);
-        row.appendChild(hdr);
+
+        const rowHeader = document.createElement('div');
+        rowHeader.className = 'benchmark-header';
+        const span = document.createElement('span');
+        const strong = document.createElement('strong');
+        strong.textContent = `${m.label}: `;
+        span.appendChild(strong);
+        span.appendChild(document.createTextNode(`${m.student}${m.unit} (Cohort: ${m.cohort}${m.unit})`));
+        rowHeader.appendChild(span);
+        row.appendChild(rowHeader);
 
         const barTrack = document.createElement('div');
         barTrack.className = 'benchmark-bars';
@@ -1059,6 +1540,89 @@
         bench.appendChild(row);
       }
       card.appendChild(bench);
+    }
+
+    function renderExplainCard(card, data) {
+      card.replaceChildren();
+      addText(card, 'h3', 'Explainable AI · Local Feature Attribution');
+      const attr = data.local_attribution;
+      if (!attr) return;
+      const netSign = attr.net_points_from_cohort_mean >= 0 ? `+${attr.net_points_from_cohort_mean}` : `${attr.net_points_from_cohort_mean}`;
+      const intro = addText(card, 'p', `Marginal attribution relative to 3.27 cohort baseline (Net Impact: ${netSign} CGPA points):`, 'small');
+      intro.style.marginBottom = '12px';
+
+      for (const item of attr.feature_attributions) {
+        const row = document.createElement('div');
+        row.className = 'benchmark-row';
+
+        const rowHeader = document.createElement('div');
+        rowHeader.className = 'benchmark-header';
+        const span = document.createElement('span');
+        const strong = document.createElement('strong');
+        strong.textContent = `${item.friendly_name}: `;
+        span.appendChild(strong);
+        span.appendChild(document.createTextNode(item.narrative));
+        rowHeader.appendChild(span);
+        row.appendChild(rowHeader);
+
+        const barTrack = document.createElement('div');
+        barTrack.className = 'benchmark-bars';
+        const barFill = document.createElement('div');
+        barFill.className = 'benchmark-val';
+        const absVal = Math.min(100, Math.abs(item.point_contribution) * 80);
+        barFill.style.width = absVal + '%';
+        barFill.style.background = item.direction === 'positive' ? 'var(--mint)' : 'var(--pink)';
+        barTrack.appendChild(barFill);
+        row.appendChild(barTrack);
+
+        card.appendChild(row);
+      }
+
+      if (data.counterfactual_plan?.status === 'counterfactual_found') {
+        const cf = data.counterfactual_plan;
+        const cfBox = document.createElement('div');
+        cfBox.style.marginTop = '14px';
+        cfBox.style.padding = '12px 14px';
+        cfBox.style.background = 'rgba(94, 234, 212, 0.1)';
+        cfBox.style.border = '1px solid rgba(94, 234, 212, 0.35)';
+        cfBox.style.borderRadius = 'var(--radius-sm)';
+
+        addText(cfBox, 'div', `🎯 Algorithmic Counterfactual Path (Target: ≥ ${cf.target_cgpa.toFixed(2)} CGPA)`, 'small');
+        const ul = document.createElement('ul');
+        ul.style.margin = '6px 0 0';
+        ul.style.paddingLeft = '18px';
+        ul.style.fontSize = '0.82rem';
+        ul.style.color = 'var(--mint)';
+        for (const act of cf.action_plan) {
+          addText(ul, 'li', act);
+        }
+        cfBox.appendChild(ul);
+        card.appendChild(cfBox);
+      }
+    }
+
+    function renderCounselorCard(card, data) {
+      card.replaceChildren();
+      addText(card, 'h3', `Curriculum Recovery Roadmap · ${data.student_major}`);
+      addText(card, 'p', data.disclaimer, 'small');
+
+      const grid = document.createElement('div');
+      grid.className = 'plan-days';
+      grid.style.marginTop = '12px';
+
+      for (const w of data.four_week_curriculum_roadmap) {
+        const dayCard = document.createElement('article');
+        dayCard.className = 'plan-day';
+        addText(dayCard, 'h3', `Week ${w.week}: ${w.theme}`);
+        addText(dayCard, 'p', w.primary_milestone, 'small');
+        const badge = document.createElement('span');
+        badge.className = 'badge risk-low';
+        badge.textContent = `Target: ${w.target_study_hours} hrs/week`;
+        badge.style.marginTop = '6px';
+        dayCard.appendChild(badge);
+        grid.appendChild(dayCard);
+      }
+      card.appendChild(grid);
     }
 
     // Current student payload store for What-If simulator
@@ -1090,10 +1654,12 @@
         const cards = {
           prediction: createLoadingCard('Estimating Final CGPA...'),
           risk: createLoadingCard('Assessing academic-risk likelihood...'),
+          explain: createLoadingCard('Computing XAI feature attribution...'),
+          counselor: createLoadingCard('Generating curriculum recovery roadmap...'),
           recommendations: createLoadingCard('Evaluating study support rules...'),
           benchmark: createLoadingCard('Comparing against cohort…')
         };
-        resultsNode.replaceChildren(cards.prediction, cards.risk, cards.recommendations, cards.benchmark);
+        resultsNode.replaceChildren(cards.prediction, cards.risk, cards.explain, cards.counselor, cards.recommendations, cards.benchmark);
 
         const requests = [
           {
@@ -1103,6 +1669,14 @@
           {
             label: 'Risk estimate',
             request: post('/api/v1/risk', payload).then((value) => renderRisk(cards.risk, value))
+          },
+          {
+            label: 'Explainable AI',
+            request: post('/api/v1/explain', payload).then((value) => renderExplainCard(cards.explain, value))
+          },
+          {
+            label: 'Curriculum Counselor',
+            request: post('/api/v1/counselor/roadmap', payload).then((value) => renderCounselorCard(cards.counselor, value))
           },
           {
             label: 'Recommendations',
@@ -1317,11 +1891,25 @@
         if (!res.ok) return;
         const data = await res.json();
         if (data.total_records) {
-          document.getElementById('kpi-total').textContent = Number(data.total_records).toLocaleString();
-          document.getElementById('kpi-cgpa').textContent = Number(data.avg_final_cgpa).toFixed(2);
-          document.getElementById('kpi-att').textContent = Number(data.avg_attendance).toFixed(1) + '%';
-          document.getElementById('kpi-study').textContent = Number(data.avg_study_hours).toFixed(1) + ' hrs';
-          document.getElementById('kpi-risk').textContent = Number(data.at_risk_rate_pct).toFixed(2) + '%';
+          const elTotal = document.getElementById('kpi-total');
+          const elCgpa = document.getElementById('kpi-cgpa');
+          const elAtt = document.getElementById('kpi-att');
+          const elStudy = document.getElementById('kpi-study');
+          const elRisk = document.getElementById('kpi-risk');
+
+          if (window.animateValue) {
+            window.animateValue(elTotal, 0, data.total_records, 800, 0);
+            window.animateValue(elCgpa, 0.0, data.avg_final_cgpa, 800, 2);
+            window.animateValue(elAtt, 0.0, data.avg_attendance, 800, 1, '%');
+            window.animateValue(elStudy, 0.0, data.avg_study_hours, 800, 1, ' hrs');
+            window.animateValue(elRisk, 0.0, data.at_risk_rate_pct, 800, 2, '%');
+          } else {
+            elTotal.textContent = Number(data.total_records).toLocaleString();
+            elCgpa.textContent = Number(data.avg_final_cgpa).toFixed(2);
+            elAtt.textContent = Number(data.avg_attendance).toFixed(1) + '%';
+            elStudy.textContent = Number(data.avg_study_hours).toFixed(1) + ' hrs';
+            elRisk.textContent = Number(data.at_risk_rate_pct).toFixed(2) + '%';
+          }
         }
         if (data.performance_bands) {
           document.getElementById('band-first').textContent = Number(data.performance_bands.first_class).toLocaleString();
@@ -1386,7 +1974,193 @@
       }
     }
 
+    // ── FACULTY ADVISOR BATCH SCREENING ──────────────────────────────────────
+    const btnDownloadTemplate = document.getElementById('btn-download-template');
+    const inputBatchCsv = document.getElementById('input-batch-csv');
+    const batchTriageResults = document.getElementById('batch-triage-results');
+
+    if (btnDownloadTemplate) {
+      btnDownloadTemplate.addEventListener('click', () => {
+        window.location.href = API_BASE + '/api/v1/faculty/sample-template';
+      });
+    }
+
+    if (inputBatchCsv) {
+      inputBatchCsv.addEventListener('change', async (e) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+        batchTriageResults.style.display = 'block';
+        batchTriageResults.replaceChildren();
+        addText(batchTriageResults, 'p', 'Analyzing uploaded student cohort in batch...', 'small');
+
+        try {
+          const text = await file.text();
+          const res = await fetch(API_BASE + '/api/v1/faculty/batch-screen', {
+            method: 'POST',
+            headers: { 'Content-Type': 'text/csv' },
+            body: text
+          });
+          if (!res.ok) {
+            const errData = await res.json().catch(() => ({}));
+            throw new Error(errData.detail || `Upload failed (${res.status})`);
+          }
+          const triage = await res.json();
+          renderBatchTriage(batchTriageResults, triage);
+        } catch (err) {
+          batchTriageResults.replaceChildren();
+          addText(batchTriageResults, 'p', `Batch screening error: ${err.message}`, 'status error');
+        }
+      });
+    }
+
+    function renderBatchTriage(container, triage) {
+      container.replaceChildren();
+
+      const kpiRow = document.createElement('div');
+      kpiRow.className = 'kpi-deck';
+      kpiRow.style.marginTop = '10px';
+
+      const tiles = [
+        { label: 'Total Screened', val: triage.total_screened, sub: 'Cohort students' },
+        { label: 'Critical Intervention', val: triage.summary.critical_intervention, sub: `${triage.summary.critical_intervention_pct}% (Urgent counseling)`, color: 'var(--pink)' },
+        { label: 'Advisory Watch', val: triage.summary.advisory_watch, sub: `${triage.summary.advisory_watch_pct}% (Peer tutoring)`, color: 'var(--peach)' },
+        { label: 'Good Standing', val: triage.summary.good_standing, sub: `${triage.summary.good_standing_pct}% (On track)`, color: 'var(--mint)' }
+      ];
+
+      for (const t of tiles) {
+        const tile = document.createElement('div');
+        tile.className = 'kpi-tile';
+        addText(tile, 'div', t.label, 'kpi-label');
+        const num = addText(tile, 'div', String(t.val), 'kpi-number');
+        if (t.color) num.style.color = t.color;
+        addText(tile, 'div', t.sub, 'kpi-sub');
+        kpiRow.appendChild(tile);
+      }
+      container.appendChild(kpiRow);
+
+      const tableWrapper = document.createElement('div');
+      tableWrapper.style.overflowX = 'auto';
+      tableWrapper.style.marginTop = '20px';
+
+      const table = document.createElement('table');
+      table.className = 'data-table';
+      const thead = document.createElement('thead');
+      const trHead = document.createElement('tr');
+      for (const col of ['Student ID', 'Major', 'Attendance', 'Study Hrs', 'Prev CGPA', 'Predicted CGPA', 'Risk Score', 'Triage Tier', 'Action Recommendation']) {
+        addText(trHead, 'th', col);
+      }
+      thead.appendChild(trHead);
+      table.appendChild(thead);
+
+      const tbody = document.createElement('tbody');
+      for (const s of triage.students) {
+        const tr = document.createElement('tr');
+        addText(tr, 'td', s.student_id);
+        addText(tr, 'td', s.major);
+        addText(tr, 'td', s.attendance_pct + '%');
+        addText(tr, 'td', s.study_hours + 'h');
+        addText(tr, 'td', s.previous_cgpa.toFixed(2));
+        addText(tr, 'td', s.predicted_cgpa.toFixed(2));
+        addText(tr, 'td', s.risk_probability_pct + '%');
+
+        const tierTd = document.createElement('td');
+        const badge = document.createElement('span');
+        badge.className = 'badge ' + (s.triage_badge === 'critical' ? 'risk-high' : s.triage_badge === 'advisory' ? 'risk-moderate' : 'risk-low');
+        badge.textContent = s.triage_tier;
+        tierTd.appendChild(badge);
+        tr.appendChild(tierTd);
+
+        addText(tr, 'td', s.recommended_action, 'small');
+        tbody.appendChild(tr);
+      }
+      table.appendChild(tbody);
+      tableWrapper.appendChild(table);
+      container.appendChild(tableWrapper);
+    }
+
+    // ── AUTHENTICATION & DEMO LOGIN MODAL ────────────────────────────────────
+    const btnAuthModal = document.getElementById('btn-auth-modal');
+    const authModal = document.getElementById('auth-modal');
+    const btnCloseAuth = document.getElementById('btn-close-auth');
+    const btnDemoStudent = document.getElementById('btn-demo-student-login');
+    const btnDemoAdvisor = document.getElementById('btn-demo-advisor-login');
+    const authStatusMsg = document.getElementById('auth-status-msg');
+
+    if (btnAuthModal && authModal) {
+      btnAuthModal.addEventListener('click', () => {
+        authModal.style.display = 'flex';
+      });
+    }
+
+    if (btnCloseAuth && authModal) {
+      btnCloseAuth.addEventListener('click', () => {
+        authModal.style.display = 'none';
+      });
+    }
+
+    async function handleDemoLogin(email, password) {
+      if (authStatusMsg) {
+        authStatusMsg.className = 'status';
+        authStatusMsg.textContent = 'Authenticating and loading profile...';
+      }
+      try {
+        const res = await fetch(API_BASE + '/api/v1/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password })
+        });
+        if (!res.ok) throw new Error('Invalid demo credentials.');
+        const data = await res.json();
+        localStorage.setItem('edupredict_token', data.access_token);
+        localStorage.setItem('edupredict_user', JSON.stringify(data.user));
+
+        if (btnAuthModal) {
+          btnAuthModal.textContent = `👤 ${data.user.full_name} (${data.user.role === 'advisor' ? 'Advisor' : 'Student'})`;
+        }
+
+        // Fetch profile
+        const meRes = await fetch(API_BASE + '/api/v1/auth/me', {
+          headers: { 'Authorization': `Bearer ${data.access_token}` }
+        });
+        if (meRes.ok) {
+          const profile = await meRes.json();
+          if (profile.registered_student_record) {
+            const rec = profile.registered_student_record;
+            for (const [k, v] of Object.entries(rec)) {
+              if (form.elements[k]) form.elements[k].value = v;
+            }
+            statusNode.className = 'status';
+            statusNode.textContent = `Welcome ${data.user.full_name}! Preloaded your registered student records from the university database.`;
+          }
+        }
+
+        if (data.user.role === 'advisor') {
+          tabAnalytics.click();
+        }
+
+        if (window.showToast) {
+          window.showToast(`Signed in as ${data.user.full_name}`, 'success', '🔐');
+        }
+        if (authModal) authModal.style.display = 'none';
+      } catch (err) {
+        if (authStatusMsg) {
+          authStatusMsg.className = 'status error';
+          authStatusMsg.textContent = err.message;
+        }
+      }
+    }
+
+    if (btnDemoStudent) {
+      btnDemoStudent.addEventListener('click', () => handleDemoLogin('student@edupredict.ai', 'student123'));
+    }
+    if (btnDemoAdvisor) {
+      btnDemoAdvisor.addEventListener('click', () => handleDemoLogin('advisor@edupredict.ai', 'advisor123'));
+    }
+
     refreshCapabilityStatus();
   </script>
+
+  <!-- Tactile Interactions Script -->
+  <script src="static/js/interactions.js" defer></script>
 </body>
 </html>

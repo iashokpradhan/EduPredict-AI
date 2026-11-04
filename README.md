@@ -115,3 +115,12 @@ Complete academic deliverables prepared for thesis submission and technical viva
 - **Non-Diagnostic Nature:** Model predictions are statistical estimates derived from historical cohorts; they are not irrevocable academic diagnoses.
 - **Provisional Threshold:** The academic risk cutoff ($\text{Final\_CGPA} < 2.0$) is a capstone project assumption, not an official university policy.
 - **Human-in-the-Loop:** All automated recommendations are designed for review in consultation with academic advisers.
+
+---
+
+## 👥 Project Team & Authors
+
+- **Ashok Pradhan** — Database Architecture, PostgreSQL Analytics & Power BI Dashboards
+- **Rudraksh Mehra** — Machine Learning Engineering, Model Development & Predictive Analytics
+- **Ayush Shukla** — Full-Stack Web Development, Explainable AI (XAI) & Cloud Deployment
+

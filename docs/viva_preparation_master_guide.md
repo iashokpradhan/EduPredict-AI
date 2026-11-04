@@ -194,3 +194,49 @@ However, in production, we do not use demographic attributes as primary determin
 2. **Longitudinal Validation:** Test model generalization across multiple consecutive academic semesters to measure cohort drift.
 3. **Role-Based Access Control (RBAC):** Restrict access so students view only their personal guidance and planner, while advisors access cohort risk lists.
 4. **SHAP Waterfall UI:** Render individualized local feature attribution waterfalls directly on the student diagnostic screen."
+
+---
+
+#### Q20. TRAP QUESTION: "Isn't predicting CGPA trivial because Previous CGPA is 86% of the signal? How do you beat a domain baseline where Final CGPA = Previous CGPA?"
+**Answer:**  
+"That is an essential baseline distinction. A naive dummy baseline that simply predicts the cohort mean yields an MAE of **0.4203**.
+We constructed a **Prior CGPA Domain Baseline** predicting $\hat{y} = \text{Previous\_CGPA}$. That baseline achieves an MAE of **0.2496** and an $R^2$ of **0.6397**—confirming that prior GPA alone accounts for roughly 64% of variance.
+
+However, our **Gradient Boosting Regressor achieves an MAE of 0.0913** ($R^2 = 0.9542$), which represents a **63.4% error reduction directly over the Prior CGPA baseline**! This demonstrates empirically that behavioral factors—classroom attendance (7.8%), daily study time (4.1%), sleep duration (1.2%), and social extracurricular balance (0.5%)—actively explain the remaining variance and account for grade trajectories."
+
+---
+
+#### Q21. TRAP QUESTION: "Your test set has only 8 positive at-risk cases (0.84% prevalence). Isn't ROC-AUC misleading? How did you validate this rigorously?"
+**Answer:**  
+"Yes, that is an acute statistical trap. In severe class imbalance (only 42 at-risk cases out of 5,000 students, or 0.84%), ROC-AUC can be deceptively optimistic (0.9952) because the 992 true negatives dominate the false positive rate denominator.
+
+To ensure scientific rigor, we reported two superior metrics:
+1. **PR-AUC (Precision-Recall Area Under Curve):** Achieved **0.7612**, compared to a random baseline of just $0.0084$ (a ~90x improvement in detection density).
+2. **Brier Score Loss:** Measured at **0.0147**, proving the probabilistic risk scores are well-calibrated rather than overconfident.
+3. **Stratified 5-Fold Cross-Validation:** Yielded a mean recall of **$92.5\% \pm 10.0\%$** (95% Confidence Interval: $[72.9\%, 100\%]$).
+
+On the held-out test confusion matrix:
+- True Negatives: 974
+- False Positives: 18 (conservative advisory flags)
+- **False Negatives: Only 1**
+- True Positives: 7 (87.5% test recall)
+
+In academic early intervention, our loss function intentionally prioritizes **high recall over high precision**: a false positive merely schedules an extra counseling check-in (minimal harm), whereas a false negative allows a student to fail silently (severe harm)."
+
+---
+
+#### Q22. "How does Explainable AI (XAI) and Counterfactual Optimization work in EduPredict AI?"
+**Answer:**  
+"In institutional decision support, a black-box model is unacceptable. We engineered `src/explainability.py` with two mathematical engines:
+1. **Local Marginal Feature Attribution (Shapley Decomposition):** Decomposes every student prediction against the empirical cohort mean ($3.27$). For an at-risk student, it isolates exact point penalties (e.g., $-0.93$ from prior GPA, $-0.60$ from $56\%$ attendance, $-0.22$ from excessive social hours).
+2. **Algorithmic Counterfactual Optimization:** Instead of guessing with manual sliders, our algorithm solves for the *least-cost behavioral intervention* needed to cross the passing threshold ($\text{CGPA} \ge 2.00$). For example, for an engineering student, it prescribes the exact prescription: *+25% attendance and +4.0h study with zero sleep sacrifice*, minimizing student cognitive burnout while guaranteeing passing trajectory."
+
+---
+
+#### Q23. "Why did you build Authentication and Role-Based Access Control (RBAC)?"
+**Answer:**  
+"Student academic performance, biometric attendance, and risk assessments are confidential educational records governed by privacy regulations like FERPA. An unauthenticated public calculator creates severe data leakage vulnerabilities.
+
+We implemented stateless JWT session security with PBKDF2-HMAC-SHA256 salted password hashing:
+- **Student Role:** Can view only their personal records, auto-populated directly from the college database without manual data entry, and can save their What-If target simulations to their profile.
+- **Faculty Advisor Role:** Authorized to access cohort analytics, early-warning risk triage, and batch CSV screening across hundreds of students at once."

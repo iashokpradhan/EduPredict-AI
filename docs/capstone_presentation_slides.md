@@ -1,7 +1,10 @@
 # EduPredict AI — Capstone Defense Presentation Deck
 
 **Presentation Title:** EduPredict AI: Student Performance Prediction and Recommendation System  
-**Presenter:** Ashok Pradhan  
+**Presenters & Project Team:**  
+- **Ashok Pradhan** (Database Architecture, PostgreSQL & Power BI)  
+- **Rudraksh Mehra** (Machine Learning & Predictive Modeling)  
+- **Ayush Shukla** (Full-Stack Web App, XAI & Deployment)  
 **Degree:** Final Year B.Tech / B.S. in Computer Science / Data Science  
 **Format:** 12-Slide Defense Deck with Visuals & Speaker Notes  
 
@@ -10,7 +13,7 @@
 ## Slide 1: Title & Executive Overview
 - **Title:** EduPredict AI: Student Performance Prediction & Support System
 - **Subtitle:** An End-to-End Data Science Application Combining Leakage-Aware Machine Learning, Relational Analytics, and Decision Support
-- **Presenter:** Ashok Pradhan
+- **Presenters:** Ashok Pradhan, Rudraksh Mehra & Ayush Shukla
 - **Date & Academic Year:** 2026–2027
 > **Speaker Notes:**  
 > "Good morning, respected professors. Today I am presenting my final-year capstone project, EduPredict AI. This project addresses a fundamental challenge in higher education: identifying students who need academic support before semester finals, rather than after the grades are already posted."

@@ -1,7 +1,10 @@
 # EduPredict AI: Student Performance Prediction and Recommendation System
 ## Final Year Capstone Project Report
 
-**Author:** Ashok Pradhan  
+**Authors & Project Team:**  
+- **Ashok Pradhan** — Database Architecture, PostgreSQL Analytics & Power BI Dashboards  
+- **Rudraksh Mehra** — Machine Learning Engineering, Model Development & Predictive Analytics  
+- **Ayush Shukla** — Full-Stack Web Development, Explainable AI (XAI) & Cloud Deployment  
 **Degree Program:** Bachelor of Technology / Science in Computer Science & Engineering / Data Science  
 **Academic Year:** 2026–2027  
 **Repository:** [github.com/iashokpradhan/EduPredict-AI](https://github.com/iashokpradhan/EduPredict-AI)  
