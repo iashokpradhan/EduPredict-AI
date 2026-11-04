@@ -573,23 +573,23 @@ def seed_default_demo_users(database_url: str | None = None) -> None:
     except Exception:
         has_student = False
 
-    # 1. Student Demo: Alex Turner (CS)
-    if not get_user_by_email("student@edupredict.ai", database_url):
+    # 1. Student Demo: Aarav Sharma (BBA, IILM University)
+    if not get_user_by_email("aarav.sharma@iilm.edu", database_url):
         create_user(
-            email="student@edupredict.ai",
+            email="aarav.sharma@iilm.edu",
             hashed_password=hash_password("student123"),
-            full_name="Alex Turner",
+            full_name="Aarav Sharma",
             role="student",
             student_id="S00001" if has_student else None,
             database_url=database_url,
         )
 
-    # 2. Advisor Demo: Dr. Sharma (Academic Dean)
-    if not get_user_by_email("advisor@edupredict.ai", database_url):
+    # 2. Advisor Demo: Dr. Priya Mehta (Dean of Academics, IILM University)
+    if not get_user_by_email("dr.mehta@iilm.edu", database_url):
         create_user(
-            email="advisor@edupredict.ai",
+            email="dr.mehta@iilm.edu",
             hashed_password=hash_password("advisor123"),
-            full_name="Dr. Sharma",
+            full_name="Dr. Priya Mehta",
             role="advisor",
             student_id=None,
             database_url=database_url,

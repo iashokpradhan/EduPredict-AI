@@ -5,6 +5,7 @@ Provides:
 - Cryptographically signed JSON Web Token (JWT) creation and verification using
   HMAC-SHA256 (standard library implementation, zero external dependency).
 - Role-based authorization dependencies for FastAPI endpoints (Student vs. Advisor).
+- Institutional email domain enforcement: only @iilm.edu addresses are accepted.
 """
 
 from __future__ import annotations
@@ -28,7 +29,25 @@ AUTH_SECRET_KEY = os.environ.get("EDUPREDICT_AUTH_SECRET", "edupredict-capstone-
 JWT_ALGORITHM = "HS256"
 JWT_EXPIRATION_SECONDS = 86400 * 7  # 7 days
 
+# ── Institutional Email Policy ────────────────────────────────────────────────
+ALLOWED_EMAIL_DOMAIN = os.environ.get("IILM_EMAIL_DOMAIN", "iilm.edu")
+# Demo accounts that bypass domain enforcement (internal use only)
+_DEMO_EMAILS = {"aarav.sharma@iilm.edu", "dr.mehta@iilm.edu"}
+
 security_bearer = HTTPBearer(auto_error=False)
+
+
+def validate_iilm_email(email: str) -> None:
+    """Raise HTTP 400 if the email address is not from the allowed institutional domain."""
+    email = email.strip().lower()
+    if not email.endswith(f"@{ALLOWED_EMAIL_DOMAIN}"):
+        raise HTTPException(
+            status_code=400,
+            detail=(
+                f"Only institutional @{ALLOWED_EMAIL_DOMAIN} email addresses are accepted. "
+                "Please use your IILM University email to register."
+            ),
+        )
 
 
 def hash_password(password: str, salt: str | None = None) -> str:

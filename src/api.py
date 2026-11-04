@@ -642,7 +642,14 @@ async def batch_screen_cohort(request: Request) -> dict[str, object]:
 
 @app.post("/api/v1/auth/register", tags=["auth"])
 def register(request: RegisterRequest) -> dict[str, object]:
-    """Register a new student or advisor account."""
+    """Register a new IILM University student or advisor account.
+
+    Email must use the institutional @iilm.edu domain.
+    """
+    # Enforce institutional email domain
+    from src.auth import validate_iilm_email
+    validate_iilm_email(request.email)
+
     if db.get_user_by_email(request.email):
         raise HTTPException(status_code=400, detail="An account with this email already exists.")
 

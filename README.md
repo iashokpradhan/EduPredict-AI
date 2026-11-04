@@ -1,13 +1,18 @@
-# EduPredict AI: Student Performance Prediction and Recommendation System
+# EduPredict AI — IILM University Student Performance Prediction System
+
+> **Institution:** IILM University, Gurugram · Department of Computer Science & Data Analytics  
+> **Domain:** `@iilm.edu` — Institutional access only
 
 [![Python 3.12 / 3.14](https://img.shields.io/badge/python-3.12%20%7C%203.14-blue.svg)](https://www.python.org/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.143.0-009688.svg)](https://fastapi.tiangolo.com/)
 [![Scikit-Learn](https://img.shields.io/badge/scikit--learn-1.9.1-orange.svg)](https://scikit-learn.org/)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-336791.svg)](https://www.postgresql.org/)
 [![Power BI Ready](https://img.shields.io/badge/Power%20BI-Star%20Schema-F2C811.svg)](https://powerbi.microsoft.com/)
-[![Tests Passing](https://img.shields.io/badge/tests-44%20passed-brightgreen.svg)](tests/)
+[![Tests Passing](https://img.shields.io/badge/tests-54%20passed-brightgreen.svg)](tests/)
 
-EduPredict AI is an end-to-end, portfolio-ready Data Science Capstone Project designed to forecast student academic performance (Final CGPA), identify students at risk of academic probation ($\text{Final\_CGPA} < 2.0$), provide transparent rules-based study guidance, and deliver institutional intelligence through SQL analytics and Power BI dashboards.
+EduPredict AI is an end-to-end, production-grade Data Science Capstone Project built for **IILM University, Gurugram**. It forecasts student academic performance (Final CGPA), identifies students at risk of academic probation ($\text{Final\_CGPA} < 2.0$), provides transparent rules-based study guidance, Explainable AI waterfall attribution, faculty batch screening, 4-week academic counseling roadmaps, and delivers institutional intelligence through SQL analytics and Power BI dashboards.
+
+**Registration and login are restricted to @iilm.edu institutional email addresses.**
 
 ---
 
@@ -22,6 +27,17 @@ EduPredict AI is an end-to-end, portfolio-ready Data Science Capstone Project de
 5. **Relational Database (3NF):** PostgreSQL / SQLite dual-support architecture storing students, academic records, prediction audits, and recommendations.
 6. **Cohort Analytics & Power BI:** Documented SQL analytics suite and Power BI Star Schema views/CSVs for academic leadership.
 7. **Interactive Dashboard:** Modern HTML5/JavaScript user interface with 1-click persona presets (High Achiever, Balanced, At-Risk, Sleep Deprived).
+
+---
+
+## 🔐 IILM University Demo Accounts
+
+| Role | Email | Password | Access |
+|---|---|---|---|
+| Student | `aarav.sharma@iilm.edu` | `student123` | Assessment, Counselor, Goals |
+| Faculty Advisor | `dr.mehta@iilm.edu` | `advisor123` | All tabs + Batch Screening |
+
+> **Note:** Registration requires a valid `@iilm.edu` email. The domain is enforced server-side.
 
 ---
 

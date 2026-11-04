@@ -775,24 +775,24 @@
   <header>
     <div class="header-top-bar">
       <div class="brand-pill shimmer-text">
-        <span class="sticker-emoji">✨</span> EduPredict AI · Capstone Prototype
+        <span class="sticker-emoji">🎓</span> IILM University · EduPredict AI
       </div>
       <div class="header-controls">
-        <button id="btn-auth-modal" class="header-pill-btn" type="button" aria-label="Sign In">👤 Sign In</button>
+        <button id="btn-auth-modal" class="header-pill-btn" type="button" aria-label="Sign In">👤 Sign In with IILM ID</button>
         <button id="theme-toggle" class="header-pill-btn" type="button" aria-label="Toggle Theme">☀️ Light</button>
         <button id="sound-toggle" class="header-pill-btn" type="button" aria-label="Toggle Sound">🔇 Muted</button>
       </div>
     </div>
     <div class="header-content">
-      <div id="hero-greeting" class="hero-greeting">Welcome back!</div>
-      <h1 class="gradient-title">Student Performance Prediction &amp; Support System</h1>
-      <p class="hero-tagline">AI-powered academic trajectory forecasting, proactive risk screening, and habit optimization — built with real ML rigor.</p>
+      <div id="hero-greeting" class="hero-greeting">Welcome to IILM University EduPredict Portal!</div>
+      <h1 class="gradient-title">Student Performance Prediction &amp; Academic Support System</h1>
+      <p class="hero-tagline">AI-powered academic trajectory forecasting for IILM University, Gurugram — proactive risk screening, habit optimization &amp; personalized recovery plans.</p>
     </div>
   </header>
 
   <nav class="nav-tabs" aria-label="Main Navigation">
     <button class="tab-btn active" id="tab-student" type="button"><span class="sticker-emoji">🎯</span> Student Assessment &amp; Planner</button>
-    <button class="tab-btn" id="tab-analytics" type="button"><span class="sticker-emoji">📊</span> Cohort Analytics (5,000 Students)</button>
+    <button class="tab-btn" id="tab-analytics" type="button"><span class="sticker-emoji">📊</span> IILM Cohort Analytics</button>
     <button class="tab-btn" id="tab-diagnostics" type="button"><span class="sticker-emoji">📈</span> Model Diagnostics &amp; Metrics</button>
     <button class="tab-btn" id="tab-history" type="button"><span class="sticker-emoji">🕒</span> Prediction Audit History</button>
   </nav>
@@ -804,14 +804,14 @@
   <!-- TAB 1: STUDENT ASSESSMENT & PLANNER -->
   <main id="view-student" class="tab-view">
     <section aria-labelledby="form-title">
-      <h2 id="form-title">Student Information</h2>
-      <p class="intro">Enter indicators available before outcomes are determined. Student ID and Final CGPA are intentionally excluded to prevent leakage.</p>
+      <h2 id="form-title">IILM Student Information</h2>
+      <p class="intro">Enter your pre-semester academic indicators. IILM student IDs and final CGPA are excluded to prevent data leakage — only behavioural inputs are used for prediction.</p>
 
       <div class="presets-container">
-        <div class="presets-label"><span class="sticker-emoji">⚡</span> Quick Demo Presets (Viva / Evaluation)</div>
+        <div class="presets-label"><span class="sticker-emoji">⚡</span> Quick Demo Presets (IILM Student Profiles)</div>
         <div class="preset-chips">
           <button class="preset-btn" type="button" data-preset="high_achiever"><span class="sticker-emoji">🌟</span> High Achiever (CS)</button>
-          <button class="preset-btn" type="button" data-preset="balanced_student"><span class="sticker-emoji">⚖️</span> Balanced Average (Biz)</button>
+          <button class="preset-btn" type="button" data-preset="balanced_student"><span class="sticker-emoji">⚖️</span> Balanced Average (BBA)</button>
           <button class="preset-btn" type="button" data-preset="at_risk_student"><span class="sticker-emoji">⚠️</span> Academic At-Risk (Eng)</button>
           <button class="preset-btn" type="button" data-preset="sleep_deprived"><span class="sticker-emoji">🌙</span> Sleep Deprived (Psych)</button>
         </div>
@@ -919,6 +919,24 @@
       </div>
     </section>
 
+    <!-- 🎯 IILM GOAL SETTING CARD -->
+    <section class="planner-section" aria-labelledby="goal-title" id="goal-section">
+      <h2 id="goal-title" style="margin: 0 0 6px 0;">🎯 Set Your CGPA Goal</h2>
+      <p class="intro">Set your target CGPA for this semester. EduPredict AI will show how far you are and what habits to change.</p>
+      <div style="display: flex; flex-wrap: wrap; gap: 1rem; align-items: flex-end; margin-top: 0.75rem;">
+        <div style="flex: 1; min-width: 180px;">
+          <label for="goal-cgpa" style="display: block; margin-bottom: 4px; font-size: 0.85rem; color: var(--text-muted);">Target CGPA (0.0 – 4.0)</label>
+          <input id="goal-cgpa" type="number" min="0" max="4" step="0.01" value="3.5" style="width: 100%; border-radius: 10px; border: 1px solid var(--border); background: var(--input-bg); color: var(--text-primary); padding: 0.6rem 0.8rem; font-size: 1rem;">
+        </div>
+        <button id="btn-set-goal" type="button" class="pill-btn primary" style="height: 44px; padding: 0 1.5rem;">💾 Save My Goal</button>
+      </div>
+      <div id="goal-status" style="margin-top: 0.75rem; font-size: 0.9rem; color: var(--text-muted);"></div>
+      <div id="goal-gap-display" style="display: none; margin-top: 1rem; padding: 1rem; background: rgba(167,139,250,0.1); border-radius: 12px; border: 1px solid var(--accent-lavender);">
+        <div id="goal-gap-text" style="font-size: 1rem; font-weight: 600; font-family: var(--font-heading); color: var(--text-primary);"></div>
+        <div id="goal-gap-hint" style="font-size: 0.82rem; color: var(--text-muted); margin-top: 4px;"></div>
+      </div>
+    </section>
+
     <section class="planner-section" aria-labelledby="planner-title">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
         <h2 id="planner-title" style="margin: 0;">Build a Weekly Study Plan</h2>
@@ -949,7 +967,7 @@
 
     <aside class="notice" role="note">
       <div>
-        <strong>Ethical Safeguard &amp; Academic Notice:</strong> Model predictions are statistical estimates derived from historical data. They do not constitute academic diagnoses or irrevocable decisions. The provisional risk threshold (Final CGPA &lt; 2.0) is a capstone benchmark and not official university policy. All automated suggestions should be reviewed in consultation with academic advisers.
+        <strong>⚠️ Ethical Safeguard &amp; IILM Academic Notice:</strong> Model predictions are statistical estimates derived from IILM cohort data. They do not constitute official academic diagnoses or irrevocable decisions. The risk threshold (Final CGPA &lt; 2.0) is a capstone project benchmark and does not represent official IILM University policy. All automated suggestions should be reviewed in consultation with your IILM academic adviser or department faculty.
       </div>
     </aside>
   </main>
@@ -1218,21 +1236,27 @@
     <div class="card" style="max-width: 440px; width: 100%; border-radius: var(--radius-lg); padding: 2rem; border: 1px solid var(--border-focus); background: var(--card-bg); box-shadow: var(--glow-lavender); position: relative;">
       <button id="btn-close-auth" type="button" style="position: absolute; top: 1rem; right: 1rem; background: none; border: none; font-size: 1.5rem; color: var(--text-muted); cursor: pointer;" aria-label="Close Modal">&times;</button>
       <h3 style="margin-top: 0; font-family: var(--font-heading); font-size: 1.4rem; color: var(--text-primary); display: flex; align-items: center; gap: 0.5rem;">
-        <span>🔐</span> Institutional Sign In
+        <span>🎓</span> IILM University Portal Sign In
       </h3>
-      <p style="color: var(--text-muted); font-size: 0.88rem; margin-bottom: 1.25rem;">
-        Test role-based access control (RBAC) with pre-seeded institutional demo profiles:
+      <p style="color: var(--text-muted); font-size: 0.88rem; margin-bottom: 0.5rem;">
+        Sign in with your institutional <strong>@iilm.edu</strong> email address. Only IILM University accounts are accepted.
+      </p>
+      <p style="color: var(--text-muted); font-size: 0.82rem; margin-bottom: 1.25rem; padding: 0.5rem 0.75rem; background: rgba(167,139,250,0.08); border-radius: 8px; border-left: 3px solid var(--accent-lavender);">
+        🔐 <strong>Demo accounts:</strong><br>
+        Student: <code>aarav.sharma@iilm.edu</code> / <code>student123</code><br>
+        Advisor: <code>dr.mehta@iilm.edu</code> / <code>advisor123</code>
       </p>
       <div id="auth-status-msg"></div>
       <div style="display: flex; flex-direction: column; gap: 0.85rem; margin-top: 1rem;">
         <button id="btn-demo-student-login" class="pill-btn primary" type="button" style="justify-content: center;">
-          🎓 1-Click Student Login (Alex Turner, CS)
+          🎓 1-Click Student Login (Aarav Sharma, BBA)
         </button>
         <button id="btn-demo-advisor-login" class="pill-btn secondary" type="button" style="justify-content: center;">
-          🏛️ 1-Click Advisor Login (Dr. Sharma)
+          🏛️ 1-Click Advisor Login (Dr. Priya Mehta, Dean)
         </button>
       </div>
       <div style="margin-top: 1.25rem; text-align: center; font-size: 0.78rem; color: var(--text-muted);">
+        IILM University, Gurugram · Department of CS &amp; Data Analytics<br>
         Secured by JWT HS256 &amp; PBKDF2-HMAC-SHA256
       </div>
     </div>
@@ -1241,7 +1265,8 @@
   <footer>
     <div class="footer-divider"></div>
     <div class="footer-content">
-      <p>EduPredict AI · Capstone Project by <strong>Ashok Pradhan</strong>, <strong>Rudraksh Mehra</strong> &amp; <strong>Ayush Shukla</strong></p>
+      <p>🎓 <strong>IILM University, Gurugram</strong> · Department of Computer Science &amp; Data Analytics</p>
+      <p class="footer-sub">EduPredict AI · Capstone Project by <strong>Ashok Pradhan</strong>, <strong>Rudraksh Mehra</strong> &amp; <strong>Ayush Shukla</strong></p>
       <p class="footer-sub">Machine Learning · FastAPI · PostgreSQL · Power BI Analytics</p>
       <div class="footer-controls">
         <button id="effects-toggle" class="footer-pill-btn" type="button">⚡ Reduce Effects</button>
@@ -1427,6 +1452,10 @@
       else if (val < 2.0) big.style.color = 'var(--pink)';
       else big.style.color = 'var(--lavender)';
 
+      // Store predicted CGPA for goal-gap calculation
+      big.id = 'latest-predicted-cgpa';
+      big.dataset.cgpa = val.toFixed(2);
+
       if (window.animateValue) {
         window.animateValue(big, 0.0, val, 700, 2);
       } else {
@@ -1437,12 +1466,29 @@
         window.triggerSuccessCelebration();
       }
 
+      // ── Peer Benchmarking (IILM Cohort Context) ───────────────────────────
+      const benchmarkDiv = document.createElement('div');
+      benchmarkDiv.style.cssText = 'margin-top: 0.75rem; padding: 0.6rem 0.9rem; background: rgba(94,234,212,0.08); border-radius: 10px; border-left: 3px solid var(--accent-mint); font-size: 0.82rem; color: var(--text-muted);';
+      const peerSpan = document.createElement('span');
+      let peerMsg = '';
+      if (val >= 3.6) peerMsg = '🏆 Top 15% of IILM cohort (5,000 students) — keep it up!';
+      else if (val >= 3.3) peerMsg = '📈 Top 30% of IILM cohort — strong performance.';
+      else if (val >= 3.0) peerMsg = '📊 Top 50% of IILM cohort (above average: 3.27 CGPA).';
+      else if (val >= 2.5) peerMsg = '⚡ Below IILM cohort average (3.27) — focus on attendance & study hours.';
+      else peerMsg = '⚠️ Bottom 15% of IILM cohort — speak to your faculty adviser soon.';
+      peerSpan.textContent = peerMsg;
+      benchmarkDiv.appendChild(peerSpan);
+      card.appendChild(benchmarkDiv);
+
       const bandText = val >= 3.5 ? 'First Class Band'
         : val >= 3.0 ? 'Upper Second Band'
           : val >= 2.0 ? 'Lower Second Band' : 'At-Risk Warning';
       addText(card, 'div', bandText, 'badge ' + (val >= 3.0 ? 'risk-low' : val >= 2.0 ? 'risk-moderate' : 'risk-high'));
 
       addText(card, 'p', prediction.disclaimer, 'small');
+
+      // Update goal gap if a goal is set
+      if (typeof updateGoalGap === 'function') updateGoalGap();
     }
 
     function renderRisk(card, risk) {
@@ -2130,7 +2176,7 @@
               if (form.elements[k]) form.elements[k].value = v;
             }
             statusNode.className = 'status';
-            statusNode.textContent = `Welcome ${data.user.full_name}! Preloaded your registered student records from the university database.`;
+            statusNode.textContent = `Welcome ${data.user.full_name}! Preloaded your registered IILM student records from the university database.`;
           }
         }
 
@@ -2151,13 +2197,79 @@
     }
 
     if (btnDemoStudent) {
-      btnDemoStudent.addEventListener('click', () => handleDemoLogin('student@edupredict.ai', 'student123'));
+      btnDemoStudent.addEventListener('click', () => handleDemoLogin('aarav.sharma@iilm.edu', 'student123'));
     }
     if (btnDemoAdvisor) {
-      btnDemoAdvisor.addEventListener('click', () => handleDemoLogin('advisor@edupredict.ai', 'advisor123'));
+      btnDemoAdvisor.addEventListener('click', () => handleDemoLogin('dr.mehta@iilm.edu', 'advisor123'));
     }
 
     refreshCapabilityStatus();
+
+    // ── 🎯 IILM GOAL SETTING ────────────────────────────────────────────────
+    const btnSetGoal = document.getElementById('btn-set-goal');
+    const goalInput = document.getElementById('goal-cgpa');
+    const goalStatus = document.getElementById('goal-status');
+    const goalGapDisplay = document.getElementById('goal-gap-display');
+    const goalGapText = document.getElementById('goal-gap-text');
+    const goalGapHint = document.getElementById('goal-gap-hint');
+
+    // Show gap whenever prediction result + goal are both present
+    function updateGoalGap() {
+      const latestPredEl = document.getElementById('latest-predicted-cgpa');
+      const targetCgpa = parseFloat(goalInput ? goalInput.value : '0');
+      if (!latestPredEl || isNaN(targetCgpa)) return;
+      const predicted = parseFloat(latestPredEl.dataset.cgpa || '0');
+      if (!predicted) return;
+      const gap = (targetCgpa - predicted).toFixed(2);
+      goalGapDisplay.style.display = 'block';
+      if (gap > 0) {
+        goalGapText.textContent = `Your predicted CGPA is ${predicted.toFixed(2)} · You need +${gap} more to hit your goal of ${targetCgpa.toFixed(2)}`;
+        goalGapHint.textContent = 'Try increasing daily study hours by 30–45 mins and improving attendance above 85% to close this gap.';
+      } else if (gap < 0) {
+        goalGapText.textContent = `🎉 Your predicted CGPA (${predicted.toFixed(2)}) already exceeds your goal of ${targetCgpa.toFixed(2)}!`;
+        goalGapHint.textContent = 'Great work! Consider raising your target or helping peers in your cohort.';
+      } else {
+        goalGapText.textContent = `✅ On track — predicted CGPA exactly matches your goal of ${targetCgpa.toFixed(2)}.`;
+        goalGapHint.textContent = '';
+      }
+    }
+
+    if (goalInput) goalInput.addEventListener('input', updateGoalGap);
+
+    if (btnSetGoal) {
+      btnSetGoal.addEventListener('click', async () => {
+        const targetCgpa = parseFloat(goalInput.value);
+        if (isNaN(targetCgpa) || targetCgpa < 0 || targetCgpa > 4) {
+          goalStatus.style.color = 'var(--accent-pink)';
+          goalStatus.textContent = '⚠️ Please enter a valid CGPA between 0.0 and 4.0.';
+          return;
+        }
+        const token = localStorage.getItem('edupredict_token');
+        if (token) {
+          try {
+            const res = await fetch(API_BASE + '/api/v1/auth/goals', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+              body: JSON.stringify({ target_cgpa: targetCgpa, action_plan: { source: 'iilm_goal_ui' } })
+            });
+            if (res.ok) {
+              goalStatus.style.color = 'var(--accent-mint)';
+              goalStatus.textContent = `✅ Goal of ${targetCgpa.toFixed(2)} CGPA saved to your IILM profile.`;
+            } else {
+              goalStatus.style.color = 'var(--text-muted)';
+              goalStatus.textContent = `Goal of ${targetCgpa.toFixed(2)} CGPA noted locally (sign in to save permanently).`;
+            }
+          } catch {
+            goalStatus.style.color = 'var(--text-muted)';
+            goalStatus.textContent = `Goal of ${targetCgpa.toFixed(2)} CGPA noted locally.`;
+          }
+        } else {
+          goalStatus.style.color = 'var(--accent-lavender)';
+          goalStatus.textContent = `🎯 Goal set: ${targetCgpa.toFixed(2)} CGPA (sign in with your @iilm.edu ID to save permanently).`;
+        }
+        updateGoalGap();
+      });
+    }
   </script>
 
   <!-- Tactile Interactions Script -->
